@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "mariadb": "^2.5.5"
+  }
+}

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sistema Web de intercambio P2P entre criptodivisas y monedas FIAT en un mercado simulado</title>
+
+        <!-- CSS -->
+            <link href="../assets/bootstrap-v5.1.1/css/bootstrap.min.css" rel="stylesheet">
+            <link href="../assets/css/main.css" rel="stylesheet">
+
+    </head>
+    <body class="position-relative">
+        <header class="navbar sticky-top flex-md-nowrap p-0 shadow bg-white">
+            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#" style="background:#eee;">
+                <img class="mx-auto d-block" width="70px;" src="../assets/images/logo.png" alt="Logo">
+            </a>
+            <div class="container">
+                <span class="ml-2 text-dark">Sistema Web de intercambio P2P entre criptodivisas y monedas FIAT en un mercado simulado</span>
+            </div>
+            <button class="navbar-toggler position-absolute d-md-none collapsed btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </header>
+
+        <div class="container-fluid" id="main_document">
+            <div class="row">
+                <nav id="sidebar_menu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                    <div class="position-sticky pt-4">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a id="menu_products" class="nav-link" href="#" tag="page_wallet">
+                                    Billeteras
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+                    <!-- Wallet page -->
+                    <section id="page_wallet" class="document_pages">
+                        <div class="pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2">Billeteras</h1>
+                        </div>
+
+                        <!-- Create -->
+                        <div class="modal fade" id="modal_products_create" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form id="form_products_create" class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">A&ntilde;adir producto</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="col-12">
+                                            <label for="name" class="form-label">Nombre</label>
+                                            <input class="form-control name"required>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="description" class="form-label">Descripci&oacute;n</label>
+                                            <textarea class="form-control description" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">A&ntilde;adir</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Read -->
+                        <article class="card p-4 bg-white mb-4">
+                            <h3>Productos</h3>
+
+                            <!-- Filter -->
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="drop_filter_products" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Filtro
+                                    </button>
+                                    <form id="form_filter_products" class="dropdown-menu p-2" aria-labelledby="drop_filter_products" novalidate>
+                                        <label class="form-label">Desde</label>
+                                        <input type="date" class="form-control from" required>
+                                        <label class="form-label">Hasta</label>
+                                        <input type="date" class="form-control to" required>
+                                        <button type="submit" class="btn btn-primary mt-2">Actualizar</button>
+                                    </form>
+                                </div>
+                            <!-- /Filter -->
+
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_products_create">A&ntilde;adir</button>
+                                <button class="btn btn-primary" onclick="HTMLToCSV('#table_products', 'table_products.csv');">Exportar como CSV</button>
+                            </div>
+                            <div id="table_products" class="table-responsive">
+                                <table class="table table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Nombre</th>
+                                            <th scope="col">Descripci&oacute;n</th>
+                                            <th scope="col">Fecha de registro</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+
+                        <!-- Update -->
+                        <div class="modal fade" id="modal_products_update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form id="form_products_update" class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Editar servicio</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-sm">
+                                                <input type="hidden" class="id"></td>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Nombre</td>
+                                                        <td><input type="text" class="form-control name"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Descripci&oacute;n</td>
+                                                        <td><textarea class="form-control description"></textarea></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Actualizar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Delete -->
+                        <div class="modal fade" id="modal_products_delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form id="form_products_delete" class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Eliminar producto</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" class="id"></td>
+                                        <p>Desea eliminar el producto ID #<strong class="id"> (</strong><strong class="name"></strong>)</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Eliminar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                    </section>
+
+                </main>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+            <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+            </div>
+        <!-- Notifications -->
+
+        <script src="../assets/js/jquery.min-v3.4.1.js"></script>
+        <script src="../assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
+
+        <script src="../assets/js/config.js"></script>
+        <script src="../assets/js/main.js"></script>
+
+        <script src="../assets/js/restapi/products.js"></script>
+    </body>
+</html>
