@@ -181,6 +181,33 @@ nav a.active_link:hover{
   border-radius: 3px;
 }
 
+ul.inicio {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+  border-radius: 8px; /* Bordes redondeados */
+  margin: 0;
+  margin-top: 20px;
+}
+
+ul.inicio li {
+  display: inline-block;
+  margin: 10px;
+  background-color: #ffffff;
+}
+
+ul.inicio li a {
+  text-decoration: none;
+  color: #333;
+  display: inline-block;
+  padding: 0 40px 0 40px;
+}
+
+ul.inicio li img {
+  width: 100px;
+  height: 100px;
+}
+
 .contenedor {
   position: relative;
   text-align: right;
