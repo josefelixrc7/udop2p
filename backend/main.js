@@ -41,7 +41,7 @@ const ut = require('./functions/utilities');
             }
             default:
             {
-                let address = "/home/josefelixrc7/projects/Others/Sistema web de intercambio P2P, Trabajo de Grado RIVAS-GUERRA/frontend"
+                let address = "/home/josefelixrc7/projects/Others/Sistema P2P RIVAS-GUERRA/Codigo/frontend"
                 let filename = address + url_pathname;
                 let extension = filename.split('.').pop();
               
@@ -62,6 +62,12 @@ const ut = require('./functions/utilities');
                     return res.end();
                 });
 
+
+                /*res.writeHead(404, {'Content-Type': 'text/html'});
+                res.write('Endpoint Not found');
+                return res.end();*/
+
+                
                 /*res.writeHead(404, {'Content-Type': 'text/html'});
                 res.write('Endpoint Not found');
                 return res.end();*/
