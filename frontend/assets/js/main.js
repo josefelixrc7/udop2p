@@ -4,24 +4,7 @@ $(function ()
     let today_date = new Date;
     let today_date_string = today_date.getFullYear() + "-" + (today_date.getMonth() + 1) + "-" + today_date.getDate();
     $('input[type=date]').val(today_date_string);
-
-    // Menus on sidebar
-
-        $("#sidebar_menu ul li a").click(function(e)
-        {
-            $(".document_pages").css("display", "none");
-            for(let a of $("nav#sidebar_menu li a"))
-            {
-                a.classList.remove("active");
-            }
-
-            let tag = $(e.target).attr('tag');
-            document.querySelector("#" + tag).style.display = "block";
-            e.target.classList.add("active");
-        });
 });
-    
-var host_server = config.API_URL;
 
 const CheckForm = (current_form) =>
 {

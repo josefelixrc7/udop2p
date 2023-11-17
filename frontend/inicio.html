@@ -40,6 +40,26 @@
     <script src="assets/js/jquery.min-v3.4.1.js"></script>
     <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
 
+    <!-- Notifications -->
+        <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+        </div>
+    <!-- Notifications -->
+
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(!result)
+                {
+                    AddNotification(`Debe iniciar sesi&oacute;n.`);
+                    window.location.href = "iniciar-sesion.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
 </body>
 </html>

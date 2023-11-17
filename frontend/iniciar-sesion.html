@@ -28,20 +28,44 @@
     </nav>
     <main>
         <h4>Inicio de sesi&oacute;n</h4>
-        <form>
-            <p>Usuario</p>
-            <input type="text" placeholder="Usuario" required><br>
+        <form id="form_login">
+            <p>Correo electr&oacute;nico</p>
+            <input id="login_email" type="email" placeholder="usuario@ejemplo.com" required><br>
             <p>Contrase&ntilde;a</p>
-            <input type="password" placeholder="Contrase&ntilde;a" required><br>
-            <p>¿Olvidaste tu contrase&ntilde;a? Escr&iacute;benos <a href="soporte@siswebp2p.com">soporte@siswebp2p.com</a>.</p>
+            <input id="login_password" type="password" placeholder="Contrase&ntilde;a" required><br>
+            <p>&iquest;Olvidaste tu contrase&ntilde;a? Escr&iacute;benos <a href="soporte@siswebp2p.com">soporte@siswebp2p.com</a>.</p>
             <input type="submit" value="Inicia Sesi&oacute;n">
         </form>
-        <p>No tienes cuenta? Puedes <a href="registro">registrarte aqu&iacute;</a></p>.
+        <p>&iquest;No tienes cuenta? Puedes <a href="registro">registrarte aqu&iacute;</a></p>.
     </main>
     
+    <!-- Notifications -->
+        <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+        </div>
+    <!-- Notifications -->
+
     <script src="assets/js/jquery.min-v3.4.1.js"></script>
     <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
 
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(!result)
+                {
+                    AddNotification(`Debe iniciar sesi&oacute;n.`);
+                }
+                else
+                {
+                    AddNotification(`Sesi&oacute;n iniciada.`);
+                    window.location.href = "inicio.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
 </body>
 </html>

@@ -6,6 +6,7 @@ const db = require('./functions/db_connection');
 const ut = require('./functions/utilities');
 
 // Handlers
+    const login_handler = require('./handlers/login_handler');
     const wallets_handler = require('./handlers/wallets_handler');
 
 // Server
@@ -25,15 +26,20 @@ const ut = require('./functions/utilities');
 
         console.log(`${req.method} ${url_pathname}`);
 
-        /*let origin = req.headers.origin != undefined ? req.headers.origin : 'https://yoururl.com';
+        let origin = 'https://localhost:9090';
 
         res.setHeader('Access-Control-Allow-Origin', origin);
         res.setHeader('Access-Control-Allow-Methods', '*');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        res.setHeader('Access-Control-Allow-Credentials', 'true');*/
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
 
         switch(url_pathname)
         {
+            case "/login":
+            {
+                login_handler.Handler(req, res, db, url_query);
+                break;
+            }
             case "/wallets":
             {
                 wallets_handler.Handler(req, res, db, url_query);
