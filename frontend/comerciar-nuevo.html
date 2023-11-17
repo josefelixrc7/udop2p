@@ -31,149 +31,15 @@
         <nav>
             <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                 <a class="nav-link active" id="nav-modalidad-tab" data-bs-toggle="tab" data-bs-target="#nav-modalidad" type="button" role="tab" aria-controls="nav-modalidad" aria-selected="true">Modalidad</a>
-                <a class="nav-link" id="nav-monedas-tab" data-bs-toggle="tab" data-bs-target="#nav-monedas" type="button" role="tab" aria-controls="nav-monedas" aria-selected="false">Monedas</a>
-                <a class="nav-link" id="nav-anuncios-tab" data-bs-toggle="tab" data-bs-target="#nav-anuncios" type="button" role="tab" aria-controls="nav-anuncios" aria-selected="false">Anuncios de &oacute;rdenes</a>
-                <a class="nav-link" id="nav-negociacion-tab" data-bs-toggle="tab" data-bs-target="#nav-negociacion" type="button" role="tab" aria-controls="nav-negociacion" aria-selected="false">Negociaci&oacute;n</a>
-                <a class="nav-link" id="nav-pago-tab" data-bs-toggle="tab" data-bs-target="#nav-pago" type="button" role="tab" aria-controls="nav-pago" aria-selected="false">Gesti&oacute;n de pago</a>
-                <a class="nav-link" id="nav-finalizar-tab" data-bs-toggle="tab" data-bs-target="#nav-finalizar" type="button" role="tab" aria-controls="nav-finalizar" aria-selected="false">Finalizar</a>
             </div>
         </nav>
         <div class="tab-content p-4 mt-2 bg-white" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-modalidad" role="tabpanel" aria-labelledby="nav-modalidad-tab">
                 <span>Seleccione su modalidad:</span>
                 <ul class="inicio">
-                    <li><img class="" src="assets/images/4.png" alt=""><a class="p-2" href="#"><b>Comprar</b> (obtener criptomonedas)</a></li>
-                    <li><img class="" src="assets/images/1.png" alt=""><a class="p-2" href="#"><b>Vender</b> (obtener criptomonedas)</a></li>
+                    <li><img class="" src="assets/images/4.png" alt=""><a class="p-2" href="comerciar-nuevo-compra.html"><b>Comprar</b> (obtener criptomonedas)</a></li>
+                    <li><img class="" src="assets/images/1.png" alt=""><a class="p-2" href="comerciar-nuevo-venta.html"><b>Vender</b> (obtener criptomonedas)</a></li>
                 </ul>
-            </div>
-            <div class="tab-pane fade" id="nav-monedas" role="tabpanel" aria-labelledby="nav-monedas-tab">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>Criptomoneda</td>
-                            <td>
-                                <select class="form-select" name="criptomoneda">
-                                    <option value="1">Bitcoin (BTC)</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>FIAT</td>
-                            <td>
-                                <select class="form-select" name="fiat">
-                                    <option value="1">VES</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="tab-pane fade" id="nav-anuncios" role="tabpanel" aria-labelledby="nav-anuncios-tab">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Usuario</th>
-                            <th>Reputacion</th>
-                            <th>Precio</th>
-                            <th>Disponible</th>
-                            <th>Medio de pago</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td role="col">usuario123</td>
-                            <td>4.5</td>
-                            <td>37,08 VES</td>
-                            <td>300 USDT</td>
-                            <td>Pago movil</td>
-                            <td><a href="#">Comerciar</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="tab-pane fade" id="nav-negociacion" role="tabpanel" aria-labelledby="nav-negociacion-tab">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>Cantidad a comprar</td>
-                            <td><input class="form-control" type="number"></td>
-                        </tr>
-                        <tr>
-                            <td>Precio</td>
-                            <td>37.2 VES</td>
-                        </tr>
-                        <tr>
-                            <td>Importe a pagar en FIAT</td>
-                            <td>372 VES</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div>
-                    <button class="btn btn-secondary d-inline-block w-auto">Cancelar</button>
-                    <button class="btn btn-primary d-inline-block w-auto">Iniciar comercio</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="nav-pago" role="tabpanel" aria-labelledby="nav-pago-tab">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>Subir comprobante</td>
-                            <td><input class="form-control" type="file"></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h4>Informaci&oacute;n de pago</h4>
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>Tipo</td>
-                            <td>Pago m&oacute;vil</td>
-                        </tr>
-                        <tr>
-                            <td>C&eacute;dula</td>
-                            <td>12345678</td>
-                        </tr>
-                        <tr>
-                            <td>Telefono</td>
-                            <td>04141243464</td>
-                        </tr>
-                        <tr>
-                            <td>Banco</td>
-                            <td>Banco de Venezuela</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div>
-                    <button class="btn btn-secondary d-inline-block w-auto">Cancelar</button>
-                    <button class="btn btn-primary d-inline-block w-auto">Confirmar pago</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="nav-finalizar" role="tabpanel" aria-labelledby="nav-finalizar-tab">
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>Esperando confirmaci&oacute;n de vendedor:</td>
-                            <td>En espera...</td>
-                        </tr>
-                        <tr>
-                            <td>Valoraci&oacute;n</td>
-                            <td>
-                                <select class="form-select" name="valoracion">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div>
-                    <button class="btn btn-secondary d-inline-block w-auto">Apelar</button>
-                    <button class="btn btn-primary d-inline-block w-auto">Finalizar</button>
-                </div>
             </div>
         </div>
             
