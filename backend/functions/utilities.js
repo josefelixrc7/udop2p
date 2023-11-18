@@ -73,3 +73,31 @@ map1.set("xml", "application/xml");
 map1.set("xul", "application/vnd.mozilla.xul+xml");
 
 exports.filetypes = map1;
+
+let find_session = function(req)
+{
+    let login_cookies = decodeURIComponent(req.headers.cookie).split(';');
+    let map_cookies = {};
+    
+    login_cookies.forEach(element => 
+    {
+        let [name, value] = element.split('=');
+        if(!name) return;
+        name = name.trim();
+        if(!value) return;
+        value = value.trim();
+    
+        map_cookies[name] = value;
+    });
+    
+    let siswebp2p_login = map_cookies['siswebp2p_session'];
+    
+    let session_email = '';
+
+    if(siswebp2p_login)
+    session_email = siswebp2p_login.split('|')[0];
+    
+    return session_email;
+}
+
+exports.find_session = find_session;

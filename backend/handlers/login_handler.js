@@ -1,4 +1,5 @@
 const dc = require('../functions/data_collector');
+const ut = require('../functions/utilities');
 
 exports.Handler = (req, res, db, url_query) =>
 {
@@ -43,34 +44,17 @@ exports.Handler = (req, res, db, url_query) =>
         }
         case 'GET':
         {
-            let login_cookies = decodeURIComponent(req.headers.cookie).split(';');
-            let map_cookies = {};
+            let email = ut.find_session(req);
         
-            login_cookies.forEach(element => 
-            {
-                let [name, value] = element.split('=');
-                if(!name) return;
-                name = name.trim();
-                if(!value) return;
-                value = value.trim();
-        
-                map_cookies[name] = value;
-            });
-        
-            let siswebp2p_login = map_cookies['siswebp2p_session'];
-        
-            if(!siswebp2p_login)
+            if(email == '')
             {
                 res.writeHead(403, {'Content-Type': 'text/html'});
                 res.write('No autorizado');
                 return res.end();
             }
-        
-            let session = siswebp2p_login.split('|')[0];
-            console.log(session)
-        
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write('Without content');
+
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.write(JSON.stringify({session_email: email}));
             return res.end();
             break;
         }

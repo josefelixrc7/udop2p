@@ -30,38 +30,46 @@
         <h4>Billeteras</h4>
 
         <div class="bloques">
-            <table class="table">
+            <table id="table_wallets" class="table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Criptomoneda</th>
                         <th>Monto</th>
                         <th>Ultimos Movimientos</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Bitcoin (BTC)</td>
-                        <td>2.56 bitcoins</td>
-                        <td>2022-nov-19</td>
-                    </tr>
-                    <tr>
-                        <td>Tether (USDT)</td>
-                        <td>500 USDT</td>
-                        <td>2022-nov-19</td>
-                    </tr>
-                    <tr>
-                        <td>Binance Coin (BNB)</td>
-                        <td>0.34 BNB</td>
-                        <td>2022-nov-19</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
     </main>
 
+    <!-- Notifications -->
+        <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+        </div>
+    <!-- Notifications -->
+
     <script src="assets/js/jquery.min-v3.4.1.js"></script>
     <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
+    <script src="assets/js/restapi/wallets.js"></script>
+
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(!result)
+                {
+                    AddNotification(`Debe iniciar sesi&oacute;n.`);
+                    window.location.href = "iniciar-sesion.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
 
 </body>
 </html>
