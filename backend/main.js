@@ -10,6 +10,7 @@ const ut = require('./functions/utilities');
     const wallets_handler = require('./handlers/wallets_handler');
     const cryptos_handler = require('./handlers/cryptos_handler');
     const fiats_handler = require('./handlers/fiats_handler');
+    const announcements_handler = require('./handlers/announcements_handler');
 
 // Server
     let port = 9090;
@@ -55,6 +56,11 @@ const ut = require('./functions/utilities');
             case "/fiat":
             {
                 fiats_handler.Handler(req, res, db, url_query);
+                break;
+            }
+            case "/announcements":
+            {
+                announcements_handler.Handler(req, res, db, url_query);
                 break;
             }
             default:

@@ -27,7 +27,7 @@
         </ul>
     </nav>
     <main>
-        <h4>Nuevo comercio <strong id="type_comercio"></strong></h4>
+        <h4>Nuevo comercio <strong id="type_comercio"></strong><input type="hidden" id="type_orden_id"></h4>
         <nav>
             <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                 <a class="nav-link active" id="nav-modalidad-tab">Modalidad</a>
@@ -67,11 +67,11 @@
                 </table>
                 <div>
                     <a href="comerciar.html" class="btn btn-secondary d-inline-block w-auto">Cancelar</a>
-                    <button class="btn btn-primary d-inline-block w-auto">Iniciar comercio</button>
+                    <button id="button_buscar_anuncios" class="btn btn-primary d-inline-block w-auto">Buscar anuncios</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-anuncios">
-                <table class="table">
+                <table id="table_ordenes_anuncios" class="table">
                     <thead>
                         <tr>
                             <th>Usuario</th>
@@ -83,16 +83,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td role="col">usuario123</td>
-                            <td>4.5</td>
-                            <td>37,08 VES</td>
-                            <td>300 USDT</td>
-                            <td>Pago movil</td>
-                            <td><a class="btn btn-primary" href="#">Comprar</a></td>
-                        </tr>
                     </tbody>
                 </table>
+                <div>
+                    <a href="comerciar.html" class="btn btn-secondary d-inline-block w-auto">Cancelar</a>
+                </div>
             </div>
             <div class="tab-pane fade" id="nav-negociacion">
                 <table class="table">
