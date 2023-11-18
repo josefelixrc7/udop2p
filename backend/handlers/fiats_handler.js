@@ -8,7 +8,6 @@ exports.Handler = (req, res, db, url_query) =>
         case 'GET':
         {
             let email = ut.find_session(req);
-            console.log(`email: ${email}`)
 
             if(email == '')
             {
@@ -19,27 +18,15 @@ exports.Handler = (req, res, db, url_query) =>
 
             let query = `
                 SELECT
-                    c.nombre AS criptomoneda
-                    ,c.imagen AS criptomoneda_imagen
-                    ,b.saldo AS saldo
-                    ,u.correo AS correo
-                    ,b.fecha_actualizacion AS fecha_actualizacion
-                FROM siswebp2p.billeteras b
-                JOIN siswebp2p.criptomonedas c ON c.id = b.id_criptomoneda
-                JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
-                WHERE
-                    u.correo = ?
+                    mf.id AS moneda_fiat_id
+                    ,mf.nombre AS moneda_fiat_nombre
+                FROM siswebp2p.monedas_fiat mf
             `;
 
             db.pool_conn
-            .query(query, [email])
+            .query(query)
             .then(results =>
             {
-                for(let row of results)
-                {
-                    row.criptomoneda_imagen = Buffer.from(row.criptomoneda_imagen).toString('base64');
-                }
-
                 delete results.meta;
                 res.writeHead(200, {'Content-Type': 'application/json'});
                 res.write(JSON.stringify(results));

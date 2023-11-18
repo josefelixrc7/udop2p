@@ -8,6 +8,8 @@ const ut = require('./functions/utilities');
 // Handlers
     const login_handler = require('./handlers/login_handler');
     const wallets_handler = require('./handlers/wallets_handler');
+    const cryptos_handler = require('./handlers/cryptos_handler');
+    const fiats_handler = require('./handlers/fiats_handler');
 
 // Server
     let port = 9090;
@@ -43,6 +45,16 @@ const ut = require('./functions/utilities');
             case "/wallets":
             {
                 wallets_handler.Handler(req, res, db, url_query);
+                break;
+            }
+            case "/crypto":
+            {
+                cryptos_handler.Handler(req, res, db, url_query);
+                break;
+            }
+            case "/fiat":
+            {
+                fiats_handler.Handler(req, res, db, url_query);
                 break;
             }
             default:

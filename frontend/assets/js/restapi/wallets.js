@@ -49,7 +49,6 @@ $(function()
         {
             $("#table_wallets tbody").empty();
             AddNotification(`Error al leer las billeteras (${error})`)
-            console.log(error)
         });
     }
     
