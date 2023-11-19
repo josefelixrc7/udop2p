@@ -16,29 +16,62 @@ exports.Handler = (req, res, db, url_query) =>
                 return res.end();
             }
 
-            let query = `
-                SELECT
-                    oa.id AS orden_id
-                    ,u.nombre_completo AS usuario_nombre
-                    ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.ordenes_negociaciones_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
-                    ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
-                    ,CONCAT(ROUND(oa.monto_disponible, 2), ' ', c.nombre) AS disponible
-                    ,mp.nombre AS metodo_pago
-                FROM siswebp2p.ordenes_anuncios oa
-                JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
-                JOIN siswebp2p.monedas_fiat_precio mfp ON mfp.id_orden_anuncio = oa.id
-                JOIN siswebp2p.monedas_fiat mf ON mf.id = mfp.id_moneda_fiat
-                JOIN siswebp2p.metodos_pago mp ON mp.id = oa.id_metodo_pago
-                JOIN siswebp2p.criptomonedas c ON c.id = oa.id_criptomoneda
-                WHERE
-                    c.id = ?
-                    AND mf.id = ?
-                    AND oa.id_orden_tipo = ?
-                ;
-            `;
+            let query = '';
+            let parameters = [];
+            if(url_query.id_announcement != undefined)
+            {
+                query = `
+                    SELECT
+                        oa.id AS orden_id
+                        ,u.nombre_completo AS usuario_nombre
+                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.ordenes_negociaciones_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
+                        ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
+                        ,ROUND(mfp.precio, 2) AS precio_real
+                        ,mf.nombre AS fiat_nombre
+                        ,c.nombre AS criptomoneda_nombre
+                        ,CONCAT(ROUND(oa.monto_disponible, 2), ' ', c.nombre) AS disponible
+                        ,ROUND(oa.monto_disponible, 2) AS disponible_real
+                        ,mp.nombre AS metodo_pago
+                        ,IFNULL(b.saldo, 0) AS saldo
+                    FROM siswebp2p.ordenes_anuncios oa
+                    JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
+                    JOIN siswebp2p.monedas_fiat_precio mfp ON mfp.id_orden_anuncio = oa.id
+                    JOIN siswebp2p.monedas_fiat mf ON mf.id = mfp.id_moneda_fiat
+                    JOIN siswebp2p.metodos_pago mp ON mp.id = oa.id_metodo_pago
+                    JOIN siswebp2p.criptomonedas c ON c.id = oa.id_criptomoneda
+                    LEFT JOIN siswebp2p.billeteras b ON b.id_criptomoneda = c.id AND b.id_usuario = (SELECT id FROM siswebp2p.usuarios WHERE correo = ?)
+                    WHERE
+                        oa.id = ?
+                `;
+                parameters = [email, url_query.id_announcement];
+            }
+            else
+            {
+                query = `
+                    SELECT
+                        oa.id AS orden_id
+                        ,u.nombre_completo AS usuario_nombre
+                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.ordenes_negociaciones_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
+                        ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
+                        ,CONCAT(ROUND(oa.monto_disponible, 2), ' ', c.nombre) AS disponible
+                        ,mp.nombre AS metodo_pago
+                    FROM siswebp2p.ordenes_anuncios oa
+                    JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
+                    JOIN siswebp2p.monedas_fiat_precio mfp ON mfp.id_orden_anuncio = oa.id
+                    JOIN siswebp2p.monedas_fiat mf ON mf.id = mfp.id_moneda_fiat
+                    JOIN siswebp2p.metodos_pago mp ON mp.id = oa.id_metodo_pago
+                    JOIN siswebp2p.criptomonedas c ON c.id = oa.id_criptomoneda
+                    WHERE
+                        c.id = ?
+                        AND mf.id = ?
+                        AND oa.id_orden_tipo = ?
+                        AND u.correo != ?
+                `;
+                parameters = [url_query.crypto, url_query.fiat, url_query.type_orden_id, email];
+            }
 
             db.pool_conn
-            .query(query, [url_query.crypto, url_query.fiat, url_query.type_orden_id])
+            .query(query, parameters)
             .then(results =>
             {
                 delete results.meta;

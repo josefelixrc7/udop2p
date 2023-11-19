@@ -138,12 +138,49 @@ $(function()
             AddNotification(`Error al leer las &oacute;rdenes de anuncios (${error})`)
         });
     }
+    const change_annoucement_values = function()
+    {
+        let cantity = $('#field_cantidad_comerciar').val();
+        let price = $('#field_precio').val();
+        let pago = cantity * price;
+        $('#field_pago_fiat').val(pago.toFixed(2));
+    }
+    const read_announcement_info = function(id_announcement)
+    {
+
+        fetch(`/announcements?id_announcement=${id_announcement}`, 
+        {
+            method: 'GET'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data =>
+        {
+            let price = data[0].precio_real * 1;
+            $('#field_disponible').text(data[0].disponible_real);
+            $('#field_disponible_criptomoneda').text(data[0].criptomoneda_nombre);
+            $('#field_disponible_billetera').text(data[0].saldo);
+            $('#field_disponible_billetera_criptomoneda').text(data[0].criptomoneda_nombre);
+            $('#field_cantidad_comerciar_criptomoneda').text(data[0].criptomoneda_nombre);
+            $('#field_precio').val(price);
+            $('#field_precio_fiat').text(data[0].fiat_nombre);
+            $('#field_pago_fiat_nombre').text(data[0].fiat_nombre);
+            change_annoucement_values();
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al leer la orden de anuncio (${error})`)
+        });
+    }
 
 
     $('#button_comprar').click(function(e)
     {
         activate_tab('#nav-monedas');
-        $('#type_comercio').text('Compra');
+        $('.type_comercio').text('Comprar');
         $('#type_orden_id').val('1');
         read_cripomonedas();
         read_fiats();
@@ -151,7 +188,7 @@ $(function()
     $('#button_vender').click(function(e)
     {
         activate_tab('#nav-monedas');
-        $('#type_comercio').text('Venta');
+        $('.type_comercio').text('Vender');
         $('#type_orden_id').val('2');
         read_cripomonedas();
         read_fiats();
@@ -164,7 +201,17 @@ $(function()
     $(document).on('click', '.button_ver_comercio', function(e)
     {
         activate_tab('#nav-negociacion');
-        console.log(e)
+        let id_announcement = $(e.target).attr('tag');
+        read_announcement_info(id_announcement);
+    });
+    $('#field_cantidad_comerciar').on('keyup', function(e)
+    {
+        change_annoucement_values();
+    });
+    $('#button_goback_to_announcements').click(function(e)
+    {
+        activate_tab('#nav-anuncios');
+        read_ordenes_anuncios();
     });
 
 

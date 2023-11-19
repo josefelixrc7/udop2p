@@ -93,21 +93,36 @@
                 <table class="table">
                     <tbody>
                         <tr>
+                            <td>Disponible a comerciar (contraparte)</td>
+                            <td><strong id="field_disponible"></strong></td>
+                            <td><strong id="field_disponible_criptomoneda"></strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Disponible (de tu billetera)</td>
+                            <td><strong id="field_disponible_billetera"></strong></td>
+                            <td><strong id="field_disponible_billetera_criptomoneda"></strong></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td>Cantidad a <strong class="type_comercio"></strong></td>
-                            <td><input id="form_cantidad_comerciar" class="form-control" type="number"></td>
+                            <td><input id="field_cantidad_comerciar" class="form-control" type="number"></td>
+                            <td><strong id="field_cantidad_comerciar_criptomoneda"></strong></td>
                         </tr>
                         <tr>
                             <td>Precio</td>
-                            <td id="field_precio"></td>
+                            <td><input id="field_precio" class="form-control" type="number" readonly></td>
+                            <td><strong id="field_precio_fiat"></strong></td>
                         </tr>
                         <tr>
                             <td>Pago en FIAT</td>
-                            <td id="field_pago_fiat"></td>
+                            <td><input id="field_pago_fiat" class="form-control" type="number" readonly></td>
+                            <td><strong id="field_pago_fiat_nombre"></strong></td>
                         </tr>
                     </tbody>
                 </table>
                 <div>
-                    <button class="btn btn-secondary d-inline-block w-auto">Atr&aacute;s</button>
+                    <button id="button_goback_to_announcements" class="btn btn-secondary d-inline-block w-auto">Atr&aacute;s</button>
                     <a href="comerciar.html" class="btn btn-secondary d-inline-block w-auto">Cancelar</a>
                     <button class="btn btn-primary d-inline-block w-auto">Iniciar comercio</button>
                 </div>
