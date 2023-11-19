@@ -120,7 +120,7 @@ $(function()
                     ,$("<td></td>").text(data[key].precio)
                     ,$("<td></td>").text(data[key].disponible)
                     ,$("<td></td>").text(data[key].metodo_pago)
-                    ,$("<td></td>").append($(`<button class="button_iniciar_comercio" tag="${data[key].metodo_pago}">Ver</button>`))
+                    ,$("<td></td>").append($(`<button class="button_ver_comercio" tag="${data[key].orden_id}">Ver</button>`))
                 ];
                 
                 let row = $("<tr></tr>");
@@ -160,6 +160,11 @@ $(function()
     {
         activate_tab('#nav-anuncios');
         read_ordenes_anuncios();
+    });
+    $(document).on('click', '.button_ver_comercio', function(e)
+    {
+        activate_tab('#nav-negociacion');
+        console.log(e)
     });
 
 

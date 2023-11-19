@@ -66,8 +66,22 @@ const VerifyInitiatedSession = (callback) =>
     .then(response => 
     {
         if(response.status == 200)
+        {
             callback(true);
+            return response.json();
+        }
         else
+        {
             callback(false);
+            return {};
+        }
+    })
+    .then(response =>
+    {
+        $('.link_session_email').text(response.session_email);
+    })
+    .catch(error =>
+    {
+        AddNotification(`Error al verificar la sesi&oacute;n (${error})`)
     });
 };

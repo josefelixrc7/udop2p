@@ -13,7 +13,7 @@
         <h2>SISWEBP2P</h2>
         <nav>
             <ul>
-                <li><a href="#">Mi Perfil</a></li>
+                <li><a class="link_session_email" href="#"></a></li>
             </ul>
         </nav>
     </header>
@@ -27,7 +27,7 @@
         </ul>
     </nav>
     <main>
-        <h4>Nuevo comercio <strong id="type_comercio"></strong><input type="hidden" id="type_orden_id"></h4>
+        <h4>Nuevo comercio <strong class="type_comercio"></strong><input type="hidden" id="type_orden_id"></h4>
         <nav>
             <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                 <a class="nav-link active" id="nav-modalidad-tab">Modalidad</a>
@@ -93,21 +93,22 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <td>Cantidad a comprar</td>
-                            <td><input class="form-control" type="number"></td>
+                            <td>Cantidad a <strong class="type_comercio"></strong></td>
+                            <td><input id="form_cantidad_comerciar" class="form-control" type="number"></td>
                         </tr>
                         <tr>
                             <td>Precio</td>
-                            <td>37.2 VES</td>
+                            <td id="field_precio"></td>
                         </tr>
                         <tr>
-                            <td>Importe a pagar en FIAT</td>
-                            <td>372 VES</td>
+                            <td>Pago en FIAT</td>
+                            <td id="field_pago_fiat"></td>
                         </tr>
                     </tbody>
                 </table>
                 <div>
-                    <button class="btn btn-secondary d-inline-block w-auto">Cancelar</button>
+                    <button class="btn btn-secondary d-inline-block w-auto">Atr&aacute;s</button>
+                    <a href="comerciar.html" class="btn btn-secondary d-inline-block w-auto">Cancelar</a>
                     <button class="btn btn-primary d-inline-block w-auto">Iniciar comercio</button>
                 </div>
             </div>

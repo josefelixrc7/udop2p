@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Anuncios de &oacute;rdenes | SISWEBP2P</title>
+
+    <!-- CSS -->
+        <link href="assets/bootstrap-v5.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/css/main.css" rel="stylesheet">
+
+</head>
+<body>
+    <header>
+        <h2>SISWEBP2P</h2>
+        <nav>
+            <ul>
+                <li><a href="#">Mi Perfil</a></li>
+            </ul>
+        </nav>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="inicio.html">Inicio</a></li>
+            <li><a href="billeteras.html">Billeteras</a></li>
+            <li><a href="comerciar.html">Comerciar</a></li>
+            <li><a href="mercados.html">Mercados</a></li>
+            <li><a href="soporte-y-ayuda.html">Soporte y Ayuda</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div>
+            <h4 class="d-inline-block me-4">Anuncios de &oacute;rdenes</h4>
+            <a class="btn btn-primary" href="comerciar-anuncio-nuevo.html">Nuevo anuncio</a>
+        </div>
+        <h6 class="mt-4">Anuncios de &oacute;rdenes</h6>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Monto</th>
+                    <th>Criptomoneda</th>
+                    <th>FIAT</th>
+                    <th>Precio</th>
+                    <th>Contraparte</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td role="col"><a href="#">#324</a></td>
+                    <td>Compra</td>
+                    <td>300 USDT</td>
+                    <td>USDT</td>
+                    <td>20 VES</td>
+                    <td>37,45 VES</td>
+                    <td>usuari12232</td>
+                    <td>2023-11-01 13:43</td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Notifications -->
+        <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+        </div>
+    <!-- Notifications -->
+
+    <script src="assets/js/jquery.min-v3.4.1.js"></script>
+    <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
+
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(!result)
+                {
+                    AddNotification(`Debe iniciar sesi&oacute;n.`);
+                    window.location.href = "iniciar-sesion.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
+</body>
+</html>
