@@ -90,17 +90,20 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-negociacion">
+                <p>Tiempo restante para aceptar iniciar el comercio: <strong id="counter_time">20</strong></p>
+                <input id="field_id_orden_anuncio" class="form-control" type="number" value="">
+                <input id="field_id_monedas_fiat_precio" class="form-control" type="number" value="">
                 <table class="table">
                     <tbody>
                         <tr>
                             <td>Disponible a comerciar (contraparte)</td>
-                            <td><strong id="field_disponible"></strong></td>
+                            <td><input id="field_disponible" class="form-control" type="number" readonly></td>
                             <td><strong id="field_disponible_criptomoneda"></strong></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Disponible (de tu billetera)</td>
-                            <td><strong id="field_disponible_billetera"></strong></td>
+                            <td><input id="field_disponible_billetera" class="form-control" type="number" readonly></td>
                             <td><strong id="field_disponible_billetera_criptomoneda"></strong></td>
                             <td></td>
                         </tr>
@@ -124,7 +127,7 @@
                 <div>
                     <button id="button_goback_to_announcements" class="btn btn-secondary d-inline-block w-auto">Atr&aacute;s</button>
                     <a href="comerciar.html" class="btn btn-secondary d-inline-block w-auto">Cancelar</a>
-                    <button class="btn btn-primary d-inline-block w-auto">Iniciar comercio</button>
+                    <button id="button_trade_init" class="btn btn-primary d-inline-block w-auto">Iniciar comercio</button>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-pago">

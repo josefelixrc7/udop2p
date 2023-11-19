@@ -147,7 +147,6 @@ $(function()
     }
     const read_announcement_info = function(id_announcement)
     {
-
         fetch(`/announcements?id_announcement=${id_announcement}`, 
         {
             method: 'GET'
@@ -160,9 +159,11 @@ $(function()
         .then(data =>
         {
             let price = data[0].precio_real * 1;
-            $('#field_disponible').text(data[0].disponible_real);
+            $('#field_id_orden_anuncio').val(data[0].orden_id);
+            $('#field_id_monedas_fiat_precio').val(data[0].monedas_fiat_precio_id);
+            $('#field_disponible').val(data[0].disponible_real);
             $('#field_disponible_criptomoneda').text(data[0].criptomoneda_nombre);
-            $('#field_disponible_billetera').text(data[0].saldo);
+            $('#field_disponible_billetera').val(data[0].saldo);
             $('#field_disponible_billetera_criptomoneda').text(data[0].criptomoneda_nombre);
             $('#field_cantidad_comerciar_criptomoneda').text(data[0].criptomoneda_nombre);
             $('#field_precio').val(price);
@@ -173,6 +174,56 @@ $(function()
         .catch(error =>
         {
             AddNotification(`Error al leer la orden de anuncio (${error})`)
+        });
+    }
+    const init_counter = function()
+    {
+        let counter_status = false;
+
+        if (!counter_status)
+        {
+            counter_status = true;
+            let time_left = 20;
+
+            function update_counter()
+            {
+                $('#counter_time').text(time_left);
+                if (time_left === 0) {
+                    activate_tab('#nav-anuncios');
+                    read_ordenes_anuncios();
+                    counter_status = false;
+                    $('#counter_time').text('20');
+                }
+                else
+                {
+                    time_left--;
+                    setTimeout(update_counter, 1000);
+                }
+            }
+
+            // Iniciar el primer ciclo de la cuenta regresiva
+            update_counter();
+        }
+    }
+    const create_trade = function(values)
+    {
+        fetch(`/trade`, 
+        {
+            method: 'POST'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+            ,body: JSON.stringify(values)
+        })
+        .then(response => response.json())
+        .then(data =>
+        {
+            console.log(data)
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al crear el comercio (${error})`)
         });
     }
 
@@ -203,6 +254,7 @@ $(function()
         activate_tab('#nav-negociacion');
         let id_announcement = $(e.target).attr('tag');
         read_announcement_info(id_announcement);
+        //init_counter();
     });
     $('#field_cantidad_comerciar').on('keyup', function(e)
     {
@@ -212,6 +264,47 @@ $(function()
     {
         activate_tab('#nav-anuncios');
         read_ordenes_anuncios();
+    });
+    $('#button_trade_init').click(function(e)
+    {
+        let values =
+        {
+            field_id_orden_anuncio: $('#field_id_orden_anuncio').val() * 1
+            ,field_id_monedas_fiat_precio: $('#field_id_monedas_fiat_precio').val() * 1
+            ,field_disponible: $('#field_disponible').val() * 1
+            ,field_disponible_billetera: $('#field_disponible_billetera').val() * 1
+            ,field_cantidad_comerciar: $('#field_cantidad_comerciar').val() * 1
+            ,field_precio: $('#field_precio').val() * 1
+            ,field_pago_fiat: $('#field_pago_fiat').val() * 1
+            ,type_orden_id: $('#type_orden_id').val() * 1
+        }
+
+        // Verify
+            if
+            (
+                values.field_cantidad_comerciar == undefined 
+                || values.field_cantidad_comerciar <= 0 
+                || values.field_cantidad_comerciar == ''
+            )
+            {
+                AddNotification(`El monto a comerciar no puede ser menor o igual a cero`);
+                return;
+            }
+            if(values.field_cantidad_comerciar > values.field_disponible)
+            {
+                AddNotification(`El monto a comerciar no puede ser mayor al monto disponible por la contraparte`);
+                return;
+            }
+
+            if(values.type_orden_id == 2 && values.field_cantidad_comerciar > values.field_disponible_billetera)
+            {
+                AddNotification(`En la venta el monto a comerciar no puede ser mayor a lo disponible en la billetera`);
+                return;
+            }
+
+
+        activate_tab('#nav-pago');
+        create_trade(values);
     });
 
 
