@@ -1,3 +1,5 @@
+const db = require('./db_connection');
+
 let map1 = new Map();
 
 map1.set("aac", "audio/aac");
@@ -101,3 +103,10 @@ let find_session = function(req)
 }
 
 exports.find_session = find_session;
+
+async function update_markets()
+{
+    let query = `CALL siswebp2p.sp_update_markets`;
+    await db.pool_conn.query(query);
+}
+exports.update_markets = update_markets;

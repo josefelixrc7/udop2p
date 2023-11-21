@@ -66,7 +66,7 @@ $(function()
                     ,$("<td></td>").text(data[key].fecha_registro)
                 ];
                 if(data[key].orden_estado != 'Finalizado')
-                    fields.push($(`<td><a href="#" class="btn btn-primary">Continuar</a></td>"`))
+                    fields.push($(`<td><a href="#" class="button_continuar_trade btn btn-primary">Continuar</a></td>"`))
                 
                 let row = $("<tr></tr>");
                 for (let val of fields)
@@ -417,6 +417,18 @@ $(function()
         }
         console.log('ok')
     });
+    $('.button_continuar_trade').click(function(e)
+    {
+        activate_tab('#nav-anuncios');
+        read_ordenes_anuncios();
+    });
+    /*$(document).on('click', '.button_continuar_trade', function(e)
+    {
+        activate_tab('#nav-negociacion');
+        let id_announcement = $(e.target).attr('tag');
+        read_announcement_info(id_announcement);
+        //init_counter();
+    });*/
 
 
     /*$('#nav-monedas-tab').click(function(e){activate_tab('#nav-monedas')});

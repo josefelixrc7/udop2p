@@ -13,6 +13,7 @@ const ut = require('./functions/utilities');
     const announcements_handler = require('./handlers/announcements_handler');
     const trade_handler = require('./handlers/trade_handler');
     const pay_method_handler = require('./handlers/pay_method_handler');
+    const markets_handler = require('./handlers/markets_handler');
 
 // Server
     let port = 9090;
@@ -25,6 +26,8 @@ const ut = require('./functions/utilities');
 
     let server = http.createServer(options, (req, res) =>
     {
+        ut.update_markets();
+        
         let req_url = url.parse(req.url, true);
         let url_query = req_url.query;
         let url_pathname = req_url.pathname;
@@ -73,6 +76,11 @@ const ut = require('./functions/utilities');
             case "/pay_method":
             {
                 pay_method_handler.Handler(req, res, db, url_query);
+                break;
+            }
+            case "/markets":
+            {
+                markets_handler.Handler(req, res, db, url_query);
                 break;
             }
             default:
