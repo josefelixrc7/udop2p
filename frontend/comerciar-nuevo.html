@@ -132,40 +132,61 @@
             </div>
             <div class="tab-pane fade" id="nav-pago">
                 <input id="text_orden_negociacion_id" type="hidden" value="">
-                <table class="table">
-                    <tbody>
-                        <tr id="row_subir_comprobante">
-                            <td>C&oacute;digo de comprobante (Referencia de transacci&oacute;n)</td>
-                            <td><input id="field_comprobante_subir" class="form-control" type="text"></td>
-                        </tr>
-                        <tr id="row_estado_pago">
-                            <td>Estado</td>
-                            <td>
-                                <strong id="text_estado_pago">En espera</strong>
-                                <span>, C&oacute;digo de comprobaci&oacute;n: </span>
-                                <strong id="text_codigo_pago"></strong>
-                                <button id="button_update_pago" class="btn btn-primary d-inline-block w-auto">Actualizar</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h4>Informaci&oacute;n de pago</h4>
-                <p id="text_descripcion_metodo_pago"></p>
-                <div>
-                    <button id="button_cancelar_pago" class="btn btn-secondary d-inline-block w-auto">Cancelar</button>
-                    <button id="button_apelar_pago" class="btn btn-secondary d-inline-block w-auto">Apelar</button>
-                    <button id="button_confirmar_pago" class="btn btn-primary d-inline-block w-auto">Confirmar pago</button>
+                <!--Pagador-->
+                <div id="section_pagador">
+                    <table class="table">
+                        <tbody>
+                            <tr id="row_subir_comprobante">
+                                <td>C&oacute;digo de comprobante (Referencia de transacci&oacute;n)</td>
+                                <td><input id="field_comprobante_subir" class="form-control" type="text"></td>
+                            </tr>
+                            <tr id="row_estado_comprobante">
+                                <td>Estado</td>
+                                <td>
+                                    <strong id="text_estado_pagador"></strong>
+                                    <button class="button_update_estado_codigo btn btn-primary d-inline-block w-auto">Actualizar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h4>Informaci&oacute;n de pago</h4>
+                    <p class="text_descripcion_metodo_pago"></p>
+                    <div>
+                        <button id="button_cancelar_pago" class="btn btn-secondary d-inline-block w-auto">Cancelar</button>
+                        <button class="button_apelar_pago btn btn-secondary d-inline-block w-auto">Apelar</button>
+                        <button id="button_subir_pago_pagador" class="btn btn-primary d-inline-block w-auto">Subir pago</button>
+                        <button id="button_finalizar_pago_pagador" class="btn btn-primary d-inline-block w-auto" disabled>Finalizar</button>
+                    </div>
+                </div>
+                <!--Verificador-->
+                <div id="section_verificador">
+                    <table class="table">
+                        <tbody>
+                            <tr id="row_estado_pago">
+                                <td>Estado</td>
+                                <td>
+                                    <strong id="text_estado_pago_verificador"></strong>
+                                </td>
+                                <td>C&oacute;digo de comprobaci&oacute;n</td>
+                                <td>
+                                    <strong id="text_codigo_pago_verificador"></strong>
+                                    <button class="button_update_estado_codigo btn btn-primary d-inline-block w-auto">Actualizar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h4>Informaci&oacute;n de pago</h4>
+                    <p class="text_descripcion_metodo_pago"></p>
+                    <div>
+                        <button class="button_apelar_pago btn btn-secondary d-inline-block w-auto">Apelar</button>
+                        <button id="button_confirmar_pago_verificador" class="btn btn-primary d-inline-block w-auto" disabled>Confirmar pago</button>
+                    </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-finalizar">
                 <table class="table">
                     <tbody>
                         <tr id="row_confirmacion_vendedor">
-                            <td>Esperando confirmaci&oacute;n de vendedor:</td>
-                            <td>
-                                <strong>En espera...</strong>
-                                <button id="button_update_confirmacion" class="btn btn-primary d-inline-block w-auto">Actualizar</button>
-                            </td>
                         </tr>
                         <tr>
                             <td>Valoraci&oacute;n</td>
@@ -183,7 +204,7 @@
                 </table>
                 <div>
                     <button id="button_apelar" class="btn btn-secondary d-inline-block w-auto">Apelar</button>
-                    <button id="button_finalizar_negociacion" class="btn btn-primary d-inline-block w-auto">Finalizar</button>
+                    <button id="button_valorar" class="btn btn-primary d-inline-block w-auto">Valorar</button>
                 </div>
             </div>
         </div>

@@ -281,7 +281,7 @@ $(function()
         .then(response => response.json())
         .then(data =>
         {
-            $('#text_descripcion_metodo_pago').text(data[0].descripcion);
+            $('.text_descripcion_metodo_pago').text(data[0].descripcion);
         })
         .catch(error =>
         {
@@ -308,6 +308,73 @@ $(function()
         .catch(error =>
         {
             AddNotification(`Error al crear el comercio (${error})`)
+        });
+    }
+    const load_pay_code = function()
+    {
+        let data =
+        {
+            field_comprobante_subir: $('#field_comprobante_subir').val()
+            ,ordenes_negociacion_id: $('#text_orden_negociacion_id').val()
+            ,trade_type: 'subir_pago'
+        }
+        fetch(`/trade`, 
+        {
+            method: 'PUT'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+            ,body: JSON.stringify(data)
+        })
+        .then(response =>
+        {
+            if(response.status == 200)
+            {
+                AddNotification(`C&oacute;digo de pago subido`);
+                $('.button_update_estado_codigo').click();
+            }
+            else
+            {
+                AddNotification(`Error al subir el c&oacute;digo de pago`);
+            }
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al subir el c&oacute;digo de pago (${error})`)
+        });
+    }
+    const confirm_pay_code = function()
+    {
+        let data =
+        {
+            ordenes_negociacion_id: $('#text_orden_negociacion_id').val()
+            ,trade_type: 'verificar_pago'
+        }
+        fetch(`/trade`, 
+        {
+            method: 'PUT'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+            ,body: JSON.stringify(data)
+        })
+        .then(response =>
+        {
+            if(response.status == 200)
+            {
+                activate_tab('#nav-finalizar');
+                AddNotification(`C&oacute;digo de pago verificado`)
+            }
+            else
+            {
+                AddNotification(`Error al verificar el c&oacute;digo de pago`)
+            }
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al verificar el c&oacute;digo de pago (${error})`)
         });
     }
 
@@ -408,7 +475,7 @@ $(function()
         activate_tab('#nav-pago');
         create_trade(values);
     });
-    $('#button_confirmar_pago').click(function(e)
+    $('#button_subir_pago_pagador').click(function(e)
     {
         let code = $('#field_comprobante_subir').val();
         if(code == "")
@@ -421,16 +488,14 @@ $(function()
             AddNotification(`El c&oacute;digo de comprobante no puede ser menor a 4`);
             return;
         }
-        console.log('ok')
+        load_pay_code();
     });
     const move_to_tab = function()
     {
         const searchParams = new URLSearchParams(window.location.search);
-        if(!searchParams.has('tab'))
+        if(!searchParams.has('trade_id'))
             return;
         
-        activate_tab('#' + searchParams.get('tab'));
-
         fetch(`/trade?orden_negociacion_id=${searchParams.get('trade_id')}`, 
         {
             method: 'GET'
@@ -442,24 +507,43 @@ $(function()
         .then(response => response.json())
         .then(data =>
         {
-            $('#type_comercio').text(data[0].orden_tipo);
+            $('#text_orden_negociacion_id').val(data[0].orden_negociacion_id);
+            $('.type_comercio').text(data[0].orden_tipo);
+            $('#type_orden_id').val(data[0].orden_tipo_id);
+            $('#text_estado_pagador').text(data[0].orden_estado);
+            $('#text_estado_pago_verificador').text(data[0].orden_estado);
+            $('#text_codigo_pago_verificador').text(data[0].codigo_comprobacion);
+
+            if(data[0].orden_estado == 'Esperando verificacion del vendedor')
+            {
+                $('#button_confirmar_pago_verificador').prop('disabled', false);
+                $('#button_cancelar_pago').prop('disabled', true);
+                activate_tab('#nav-pago');
+                console.log('hola')
+            }
+            else if(data[0].orden_estado == 'Finalizado')
+            {
+                $('#button_finalizar_pago_pagador').prop('disabled', false);
+                activate_tab('#nav-finalizar');
+            }
+            else
+            {
+                activate_tab('#nav-pago');
+                $('#button_finalizar_pago_pagador').prop('disabled', true);
+                $('#button_confirmar_pago_verificador').prop('disabled', true);
+                $('#button_cancelar_pago').prop('disabled', false);
+            }
+            
+            read_pay_method();
             const panel_comprador = function()
             {
-                $(`#row_subir_comprobante`).show();
-                $(`#row_estado_pago`).hide();
-                $(`#button_cancelar_pago`).prop('disabled', false);
-                $(`#button_apelar_pago`).hide();
-                $(`#button_confirmar_pago`).show();
-                $(`#button_confirmar_pago`).prop('disabled', false);
+                $('#section_pagador').show();
+                $('#section_verificador').hide();
             }
             const panel_vendedor = function()
             {
-                $(`#row_subir_comprobante`).hide();
-                $(`#row_estado_pago`).show();
-                $(`#button_cancelar_pago`).prop('disabled', true);
-                $(`#button_apelar_pago`).show();
-                $(`#button_confirmar_pago`).show();
-                $(`#button_confirmar_pago`).prop('disabled', true);
+                $('#section_pagador').hide();
+                $('#section_verificador').show();
             }
             if(data[0].orden_tipo == 'Compra' && data[0].usuario_logueado == data[0].usuario_negoceador)
             {
@@ -484,6 +568,47 @@ $(function()
         });
     }
     move_to_tab();
+    $('.button_update_estado_codigo').click(function()
+    {
+        let orden_negociacion_id = $('#text_orden_negociacion_id').val();
+        fetch(`/trade?orden_negociacion_id=${orden_negociacion_id}`, 
+        {
+            method: 'GET'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data =>
+        {
+            $('#text_estado_pagador').text(data[0].orden_estado);
+            $('#text_estado_pago_verificador').text(data[0].orden_estado);
+            $('#text_codigo_pago_verificador').text(data[0].codigo_comprobacion);
+
+            if(data[0].orden_estado == 'Esperando verificacion del vendedor')
+            {
+                $('#button_confirmar_pago_verificador').prop('disabled', false);
+                $('#button_cancelar_pago').prop('disabled', true);
+            }
+            if(data[0].orden_estado == 'Finalizado')
+            {
+                $('#button_finalizar_pago_pagador').prop('disabled', false);
+            }
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al leer el comercio (${error})`)
+        });
+    });
+    $('#button_confirmar_pago_verificador').click(function()
+    {
+        confirm_pay_code();
+    });
+    $('#button_finalizar_pago_pagador').click(function()
+    {
+        activate_tab('#nav-finalizar');
+    });
 
 
     /*$('#nav-monedas-tab').click(function(e){activate_tab('#nav-monedas')});
