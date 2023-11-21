@@ -133,8 +133,9 @@ exports.Handler = (req, res, db, url_query) =>
                     ,mf.nombre AS moneda_fiat_nombre
                     ,mfp.precio AS moneda_fiat_precio
                     ,one.fecha_registro AS fecha_registro
-                    ,u.nombre_completo AS usuario_creador
-                    ,u2.nombre_completo AS usuario_negoceador
+                    ,u.correo AS usuario_creador
+                    ,u2.correo AS usuario_negoceador
+                    ,? AS usuario_logueado
                 FROM siswebp2p.ordenes_negociaciones one
                 JOIN siswebp2p.ordenes_anuncios oa ON oa.id = one.id_orden_anuncio
                 JOIN siswebp2p.ordenes_tipos ot ON ot.id = oa.id_orden_tipo
@@ -144,12 +145,13 @@ exports.Handler = (req, res, db, url_query) =>
                 JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
                 JOIN siswebp2p.usuarios u2 ON u2.id = one.id_usuario_negoceador
                 WHERE
-                    u2.correo = ?
-                    OR u.correo = ?
+                    (u2.correo = ?
+                    OR u.correo = ?)
+                    ${url_query.orden_negociacion_id != undefined? 'AND one.id = ' + url_query.orden_negociacion_id : ''}
             `;
 
             db.pool_conn
-            .query(query, [email, email])
+            .query(query, [email, email, email])
             .then(results =>
             {
                 delete results.meta;

@@ -65,9 +65,15 @@ $(function()
                     ,$("<td></td>").text(data[key].usuario_negoceador)
                     ,$("<td></td>").text(data[key].fecha_registro)
                 ];
-                if(data[key].orden_estado != 'Finalizado')
-                    fields.push($(`<td><a href="#" class="button_continuar_trade btn btn-primary">Continuar</a></td>"`))
-                
+                if(data[key].orden_estado == 'Esperando pago del comprador')
+                    fields.push($(`<td><a href="comerciar-nuevo.html?tab=nav-pago&trade_id=${data[key].orden_negociacion_id}" class="btn btn-primary">Continuar</a></td>"`))
+                else if(data[key].orden_estado == 'Esperando verificacion del vendedor')
+                    fields.push($(`<td><a href="comerciar-nuevo.html?tab=nav-pago&trade_id=${data[key].orden_negociacion_id}" class="btn btn-primary">Continuar</a></td>"`))
+                else if(data[key].orden_estado == 'Pago verificado')
+                    fields.push($(`<td><a href="comerciar-nuevo.html?tab=nav-finalizar&trade_id=${data[key].orden_negociacion_id}" class="btn btn-primary">Continuar</a></td>"`))
+                else if(data[key].orden_estado != 'Finalizado')
+                    fields.push($(`<td><a href="comerciar-nuevo.html?tab=nav-pago&trade_id=${data[key].orden_negociacion_id}" class="btn btn-primary">Continuar</a></td>"`))
+
                 let row = $("<tr></tr>");
                 for (let val of fields)
                 {
@@ -417,18 +423,67 @@ $(function()
         }
         console.log('ok')
     });
-    $('.button_continuar_trade').click(function(e)
+    const move_to_tab = function()
     {
-        activate_tab('#nav-anuncios');
-        read_ordenes_anuncios();
-    });
-    /*$(document).on('click', '.button_continuar_trade', function(e)
-    {
-        activate_tab('#nav-negociacion');
-        let id_announcement = $(e.target).attr('tag');
-        read_announcement_info(id_announcement);
-        //init_counter();
-    });*/
+        const searchParams = new URLSearchParams(window.location.search);
+        if(!searchParams.has('tab'))
+            return;
+        
+        activate_tab('#' + searchParams.get('tab'));
+
+        fetch(`/trade?orden_negociacion_id=${searchParams.get('trade_id')}`, 
+        {
+            method: 'GET'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data =>
+        {
+            $('#type_comercio').text(data[0].orden_tipo);
+            const panel_comprador = function()
+            {
+                $(`#row_subir_comprobante`).show();
+                $(`#row_estado_pago`).hide();
+                $(`#button_cancelar_pago`).prop('disabled', false);
+                $(`#button_apelar_pago`).hide();
+                $(`#button_confirmar_pago`).show();
+                $(`#button_confirmar_pago`).prop('disabled', false);
+            }
+            const panel_vendedor = function()
+            {
+                $(`#row_subir_comprobante`).hide();
+                $(`#row_estado_pago`).show();
+                $(`#button_cancelar_pago`).prop('disabled', true);
+                $(`#button_apelar_pago`).show();
+                $(`#button_confirmar_pago`).show();
+                $(`#button_confirmar_pago`).prop('disabled', true);
+            }
+            if(data[0].orden_tipo == 'Compra' && data[0].usuario_logueado == data[0].usuario_negoceador)
+            {
+                panel_comprador();
+            }
+            else if(data[0].orden_tipo == 'Venta' && data[0].usuario_logueado == data[0].usuario_negoceador)
+            {
+                panel_vendedor();
+            }
+            if(data[0].orden_tipo == 'Compra' && data[0].usuario_logueado != data[0].usuario_negoceador)
+            {
+                panel_vendedor();
+            }
+            else if(data[0].orden_tipo == 'Venta' && data[0].usuario_logueado != data[0].usuario_negoceador)
+            {
+                panel_comprador();
+            }
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al leer el comercio (${error})`)
+        });
+    }
+    move_to_tab();
 
 
     /*$('#nav-monedas-tab').click(function(e){activate_tab('#nav-monedas')});
