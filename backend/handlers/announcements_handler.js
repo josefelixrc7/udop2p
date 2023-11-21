@@ -25,7 +25,7 @@ exports.Handler = (req, res, db, url_query) =>
                         oa.id AS orden_id
                         ,mfp.id AS monedas_fiat_precio_id
                         ,u.nombre_completo AS usuario_nombre
-                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.ordenes_negociaciones_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
+                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.usuarios_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
                         ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
                         ,ROUND(mfp.precio, 2) AS precio_real
                         ,mf.nombre AS fiat_nombre
@@ -52,7 +52,7 @@ exports.Handler = (req, res, db, url_query) =>
                     SELECT
                         oa.id AS orden_id
                         ,u.nombre_completo AS usuario_nombre
-                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.ordenes_negociaciones_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
+                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.usuarios_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
                         ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
                         ,CONCAT(ROUND(oa.monto_disponible, 2), ' ', c.nombre) AS disponible
                         ,mp.nombre AS metodo_pago

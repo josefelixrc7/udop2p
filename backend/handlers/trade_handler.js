@@ -150,6 +150,7 @@ exports.Handler = (req, res, db, url_query) =>
                     (u2.correo = ?
                     OR u.correo = ?)
                     ${url_query.orden_negociacion_id != undefined? 'AND one.id = ' + url_query.orden_negociacion_id : ''}
+                ORDER BY one.fecha_registro DESC
             `;
 
             db.pool_conn

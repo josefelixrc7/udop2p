@@ -30,7 +30,7 @@ $(function()
                 // Fields
                 let fields = 
                 [
-                    $(`<th><img class="me-4" width="50" src="${image_data_url}" alt="${data[key].criptomoneda}"></th>`)
+                    $(`<th><img class="me-4" width="50" src="${image_data_url}" alt="${data[key].criptomoneda}">${data[key].criptomoneda}</th>`)
                     ,$(`<th>${data[key].criptomoneda}</th>`)
                     ,$("<td></td>").text(data[key].saldo)
                     ,$("<td></td>").text(reg_date_string)

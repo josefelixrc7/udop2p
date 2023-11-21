@@ -27,6 +27,7 @@ $(function()
                 let fields = 
                 [
                     $(`<th><img class="me-4" width="50" src="${image_data_url}" alt="${data[key].criptomoneda_nombre}"></th>`)
+                    ,$(`<th>${data[key].criptomoneda_nombre}</th>`)
                     ,$("<td></td>").text(data[key].criptomoneda_precio)
                 ];
                 

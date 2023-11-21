@@ -106,7 +106,11 @@ exports.find_session = find_session;
 
 async function update_markets()
 {
-    let query = `CALL siswebp2p.sp_update_markets`;
+    let query = `
+    UPDATE siswebp2p.criptomonedas_precios
+    SET
+        precio = precio + (RAND() * 2 - 1) * (variacion/100) * precio
+    `;
     await db.pool_conn.query(query);
 }
 exports.update_markets = update_markets;

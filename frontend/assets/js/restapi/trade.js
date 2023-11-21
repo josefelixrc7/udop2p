@@ -377,6 +377,16 @@ $(function()
             AddNotification(`Error al verificar el c&oacute;digo de pago (${error})`)
         });
     }
+    const panel_comprador = function()
+    {
+        $('#section_pagador').show();
+        $('#section_verificador').hide();
+    }
+    const panel_vendedor = function()
+    {
+        $('#section_pagador').hide();
+        $('#section_verificador').show();
+    }
 
 
     $('#button_comprar').click(function(e)
@@ -454,21 +464,11 @@ $(function()
             }
             if(values.type_orden_id == 1)
             {
-                $(`#row_subir_comprobante`).show();
-                $(`#row_estado_pago`).hide();
-                $(`#button_cancelar_pago`).prop('disabled', false);
-                $(`#button_apelar_pago`).hide();
-                $(`#button_confirmar_pago`).show();
-                $(`#button_confirmar_pago`).prop('disabled', false);
+                panel_comprador();
             }
             else
             {
-                $(`#row_subir_comprobante`).hide();
-                $(`#row_estado_pago`).show();
-                $(`#button_cancelar_pago`).prop('disabled', true);
-                $(`#button_apelar_pago`).show();
-                $(`#button_confirmar_pago`).show();
-                $(`#button_confirmar_pago`).prop('disabled', true);
+                panel_vendedor();
             }
 
 
@@ -519,7 +519,6 @@ $(function()
                 $('#button_confirmar_pago_verificador').prop('disabled', false);
                 $('#button_cancelar_pago').prop('disabled', true);
                 activate_tab('#nav-pago');
-                console.log('hola')
             }
             else if(data[0].orden_estado == 'Finalizado')
             {
@@ -535,16 +534,6 @@ $(function()
             }
             
             read_pay_method();
-            const panel_comprador = function()
-            {
-                $('#section_pagador').show();
-                $('#section_verificador').hide();
-            }
-            const panel_vendedor = function()
-            {
-                $('#section_pagador').hide();
-                $('#section_verificador').show();
-            }
             if(data[0].orden_tipo == 'Compra' && data[0].usuario_logueado == data[0].usuario_negoceador)
             {
                 panel_comprador();
@@ -608,6 +597,41 @@ $(function()
     $('#button_finalizar_pago_pagador').click(function()
     {
         activate_tab('#nav-finalizar');
+    });
+    $('#button_valorar').click(function()
+    {
+        let data =
+        {
+            orden_negociacion_id: $('#text_orden_negociacion_id').val()
+            ,select_valoracion: $('#select_valoracion').val()
+        }
+
+        fetch(`/score`, 
+        {
+            method: 'POST'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+            ,body: JSON.stringify(data)
+        })
+        .then(response =>
+        {
+            if(response.status == 200)
+            {
+                AddNotification(`Valoraci&oacute;n a&ntilde;adida. Comercio finalizado.`);
+                setTimeout(() =>
+                {
+                    window.location.href = "comerciar.html";
+                }, 1000);
+            }
+            else
+                AddNotification(`Error al a&ntilde;adir la valoraci&oacute;n`)
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al a&ntilde;adir la valoraci&oacute;n (${error})`)
+        });
     });
 
 
