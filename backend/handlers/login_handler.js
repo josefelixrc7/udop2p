@@ -53,9 +53,34 @@ exports.Handler = (req, res, db, url_query) =>
                 return res.end();
             }
 
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.write(JSON.stringify({session_email: email}));
-            return res.end();
+            let query = `
+                SELECT correo, rol
+                FROM siswebp2p.usuarios u
+                WHERE u.correo = ?
+            `;
+
+            db.pool_conn
+            .query(query, [email])
+            .then(results =>
+            {
+                if(results.length == 0)
+                {
+                    res.writeHead(403, {'Content-Type': 'text/html'});
+                    res.write('No autorizado');
+                    return res.end();
+                }
+
+                delete results.meta;
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.write(JSON.stringify(results));
+                return res.end();
+            })
+            .catch(err =>
+            {
+                res.writeHead(502, {'Content-Type': 'text/html'});
+                res.write("Error: " + err);
+                return res.end();
+            });
             break;
         }
         case 'DELETE':

@@ -99,12 +99,43 @@ const VerifyInitiatedSession = (callback) =>
             return {};
         }
     })
-    .then(response =>
+    .then(data =>
     {
-        $('.link_session_email').text(response.session_email);
+        if(data.length > 0)
+            $('.link_session_email').text(data[0].correo);
     })
     .catch(error =>
     {
         AddNotification(`Error al verificar la sesi&oacute;n (${error})`)
     });
 };
+
+const VerifyUserRole = (callback) =>
+{
+    fetch(`/login`
+    ,{
+        method: 'GET'
+        ,mode: 'cors'
+        ,cache: 'no-cache'
+        ,credentials: 'same-origin'
+        ,headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data =>
+    {
+        if(data.length == 0)
+        {
+            callback(false);
+            return;
+        }
+
+        if(data[0].rol == 'admin')
+            callback(true);
+        else
+            callback(false);
+    })
+    .catch(error =>
+    {
+        AddNotification(`Error al verificar el rol (${error})`)
+    });
+}
