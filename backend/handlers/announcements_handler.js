@@ -56,6 +56,18 @@ exports.Handler = (req, res, db, url_query) =>
                         ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
                         ,CONCAT(ROUND(oa.monto_disponible, 2), ' ', c.nombre) AS disponible
                         ,mp.nombre AS metodo_pago
+                        ,(IF
+                            (
+                                (SELECT
+                                    u2.id
+                                FROM siswebp2p.usuarios u2
+                                JOIN siswebp2p.usuarios_metodos_pago ump2 ON ump2.id_usuario = u2.id
+                                WHERE
+                                    u2.correo = ?
+                                    AND ump2.id_metodo_pago = mp.id)
+                                IS NOT NULL, 1, 0
+                             )
+                        ) AS usuario_posee_metodo
                     FROM siswebp2p.ordenes_anuncios oa
                     JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
                     JOIN siswebp2p.monedas_fiat_precio mfp ON mfp.id_orden_anuncio = oa.id
@@ -68,7 +80,7 @@ exports.Handler = (req, res, db, url_query) =>
                         AND oa.id_orden_tipo = ?
                         AND u.correo != ?
                 `;
-                parameters = [url_query.crypto, url_query.fiat, url_query.type_orden_id, email];
+                parameters = [email, url_query.crypto, url_query.fiat, url_query.type_orden_id, email];
             }
 
             db.pool_conn

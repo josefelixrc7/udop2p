@@ -4,6 +4,11 @@ $(function ()
     let today_date = new Date;
     let today_date_string = today_date.getFullYear() + "-" + (today_date.getMonth() + 1) + "-" + today_date.getDate();
     $('input[type=date]').val(today_date_string);
+
+    $('.link_session_email').click(function()
+    {
+        window.location.href = "mi-perfil.html"; 
+    });
 });
 
 const CheckForm = (current_form) =>

@@ -182,7 +182,13 @@ $(function()
                     ,$("<td></td>").text(data[key].precio)
                     ,$("<td></td>").text(data[key].disponible)
                     ,$("<td></td>").text(data[key].metodo_pago)
-                    ,$("<td></td>").append($(`<button class="button_ver_comercio" tag="${data[key].orden_id}">Ver</button>`))
+                    ,$("<td></td>").append
+                    (
+                        data[key].usuario_posee_metodo == 1 ?
+                            $(`<button class="button_ver_comercio btn btn-primary" tag="${data[key].orden_id}">Ver</button>`)
+                        :
+                            $(`<strong>Debe agregar el m&eacute;todo de pago</strong>`)
+                    )
                 ];
                 
                 let row = $("<tr></tr>");
