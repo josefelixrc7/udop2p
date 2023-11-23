@@ -31,65 +31,11 @@
         <button class="btn btn-primary d-inline-block w-auto">Nuevo</button>
 
         <div class="d-flex align-items-start bg-white rounded p-2">
-            <div class="nav flex-column nav-pills me-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">#55: Apelacion a negociacion #34</button>
-                <button class="nav-link" id="v-pills-home2-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home2" type="button" role="tab" aria-controls="v-pills-home2" aria-selected="true">#54: Apelacion a negociacion #33</button>
+            <div id="section_buttons_tickets" class="nav flex-column nav-pills me-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                
             </div>
-            <div class="tab-content" id="v-pills-tabContent p-2">
-                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>Estado</td>
-                                <td>
-                                    <select class="form-select" name="">
-                                        <option value="1">En espera</option>
-                                        <option value="2">Resuelto</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>T&iacute;tulo</td>
-                                <td>#55: Apelacion a negociacion #34</td>
-                            </tr>
-                            <tr>
-                                <td>Descripci&oacute;n</td>
-                                <td><p></p></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        Un asesor se estar&aacute; comunicando con usted y la contraparte (usuario1234) para solicitar toda la informaci&oacute;n sobre la apelaci&oacute;n.
-                        Est&eacute; atento a su correo <strong>correo123@gmail.com</strong>
-                    </p>
-                </div>
-                <div class="tab-pane fade" id="v-pills-home2" role="tabpanel" aria-labelledby="v-pills-home2-tab">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td>Estado</td>
-                                <td>
-                                    <select class="form-select" name="">
-                                        <option value="1">En espera</option>
-                                        <option value="2">Resuelto</option>
-                                    </select>
-                                </td>
-                                <tr>
-                                    <td>T&iacute;tulo</td>
-                                    <td>#54: Apelacion a negociacion #33</td>
-                                </tr>
-                                <tr>
-                                    <td>Descripci&oacute;n</td>
-                                    <td><p></p></td>
-                                </tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        Un asesor se estar&aacute; comunicando con usted y la contraparte (usuario1234) para solicitar toda la informaci&oacute;n sobre la apelaci&oacute;n.
-                        Est&eacute; atento a su correo <strong>correo123@gmail.com</strong>
-                    </p>
-                </div>
+            <div id="section_body_tickets" class="tab-content" id="v-pills-tabContent p-2">
+
             </div>
         </div>          
     </main>
@@ -97,6 +43,23 @@
     <script src="assets/js/jquery.min-v3.4.1.js"></script>
     <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
+    <script src="assets/js/restapi/support.js"></script>
+
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(!result)
+                {
+                    AddNotification(`Debe iniciar sesi&oacute;n.`);
+                    window.location.href = "iniciar-sesion.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
 
 </body>
 </html>
