@@ -28,22 +28,48 @@
     </nav>
     <main>
         <h4>Registro</h4>
-        <form>
+        <form id="form_signup">
             <label for="correo">Correo</label>
-            <input type="text" id="correo" name="correo" placeholder="Correo" required><br>
+            <input type="text" id="correo" placeholder="Correo" required><br>
+            <label for="nombre_completo">Nombres completos</label>
+            <input type="text" id="nombre_completo" placeholder="Pedro Perez" required><br>
+            <label for="cedula">C&eacute;dula</label>
+            <input type="text" id="cedula" placeholder="V00000000" required><br>
             <label for="contrasena">Contrase&ntilde;a</label>
-            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required><br>
-            <label for="repetir_contrasena">Repetir Contraseña</label>
-            <input type="password" id="repetir_contrasena" name="repetir_contrasena" placeholder="Repetir Contrase&ntilde;a" required><br>
-            <input type="submit" value="Registrarse">
+            <input type="password" id="contrasena" placeholder="Contrase&ntilde;a" required><br>
+            <label for="repetir_contrasena">Repetir Contrase&ntilde;a</label>
+            <input type="password" id="repetir_contrasena" placeholder="Repetir Contrase&ntilde;a" required><br>
+            <input id="button_registro" type="submit" value="Registrarse">
         </form>
-        <p>¿Ya tienes una cuenta? Puedes <a href="registro.html">iniciar sesi&oacute;n aqu&iacute;</a>.</p>
-        <p>¿Olvidaste tu contrase&ntilde;a? Escr&iacute;benos <a href="soporte@siswebp2p.com">soporte@siswebp2p.com</a>.</p>
+        <p>&iquest;Ya tienes una cuenta? Puedes <a href="iniciar-sesion.html">iniciar sesi&oacute;n aqu&iacute;</a>.</p>
+        <p>&iquest;Olvidaste tu contrase&ntilde;a? Escr&iacute;benos <a href="soporte@siswebp2p.com">soporte@siswebp2p.com</a>.</p>
     </main>
     
+    <!-- Notifications -->
+        <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+        </div>
+    <!-- Notifications -->
+
     <script src="assets/js/jquery.min-v3.4.1.js"></script>
     <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
+    <script src="assets/js/restapi/signup.js"></script>
+
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(result)
+                {
+                    AddNotification(`Sesi&oacute;n ya iniciada.`);
+                    window.location.href = "inicio.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
 
 </body>
 </html>

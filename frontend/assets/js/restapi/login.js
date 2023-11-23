@@ -30,7 +30,7 @@ $(function()
                 return response.json();
             else
             {
-                AddNotification(`Usuario o contrase&ntilde;a incorrectos`);
+                AddNotification(`Puede que su usuario o contrase&ntilde;a sean incorrectos, o su cuenta no haya sido activada a&uacute;n`);
                 return [];
             }
             
@@ -48,6 +48,29 @@ $(function()
         .catch(error =>
         {
             AddNotification(`Error al iniciar sesi&oacute;n (${error})`)
+        });
+    });
+    $(".logout").click(e => 
+    {
+        fetch(`/login`,
+        {
+            method: 'DELETE'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => 
+        {
+            if(response.status == 200)
+                window.location.href = "iniciar-sesion.html";
+            else
+                AddNotification(`Error al cerrar sesi&oacute;n`);
+            
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al cerrar sesi&oacute;n (${error})`)
         });
     });
 });

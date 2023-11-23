@@ -10,9 +10,9 @@ exports.Handler = (req, res, db, url_query) =>
             dc.DataCollector(req, result =>
             {
                 let query = `
-                    SELECT correo
+                    SELECT correo, rol
                     FROM siswebp2p.usuarios u
-                    WHERE u.correo = ? AND u.clave = ?
+                    WHERE u.correo = ? AND u.clave = ? AND u.estado = 'activo'
                 `;
     
                 db.pool_conn
@@ -55,6 +55,22 @@ exports.Handler = (req, res, db, url_query) =>
 
             res.writeHead(200, {'Content-Type': 'application/json'});
             res.write(JSON.stringify({session_email: email}));
+            return res.end();
+            break;
+        }
+        case 'DELETE':
+        {
+            let email = ut.find_session(req);
+        
+            if(email == '')
+            {
+                res.writeHead(403, {'Content-Type': 'text/html'});
+                res.write('No autorizado');
+                return res.end();
+            }
+
+            res.setHeader('Set-Cookie', [`siswebp2p_session=${email}; Max-Age=0; HttpOnly=true; Path=/`]);
+            res.writeHead(200, {'Content-Type': 'application/json'});
             return res.end();
             break;
         }

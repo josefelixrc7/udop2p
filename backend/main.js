@@ -16,6 +16,7 @@ const ut = require('./functions/utilities');
     const markets_handler = require('./handlers/markets_handler');
     const score_handler = require('./handlers/score_handler');
     const support_handler = require('./handlers/support_handler');
+    const signup_handler = require('./handlers/signup_handler');
 
 // Server
     let port = 9090;
@@ -93,6 +94,11 @@ const ut = require('./functions/utilities');
             case "/support":
             {
                 support_handler.Handler(req, res, db, url_query);
+                break;
+            }
+            case "/signup":
+            {
+                signup_handler.Handler(req, res, db, url_query);
                 break;
             }
             default:
