@@ -513,6 +513,8 @@ $(function()
             $('#text_estado_pagador').text(data[0].orden_estado);
             $('#text_estado_pago_verificador').text(data[0].orden_estado);
             $('#text_codigo_pago_verificador').text(data[0].codigo_comprobacion);
+            $('#field_usuario_creador').val(data[0].usuario_creador);
+            $('#field_usuario_negoceador').val(data[0].usuario_negoceador);
 
             if(data[0].orden_estado == 'Esperando verificacion del vendedor')
             {
@@ -631,6 +633,43 @@ $(function()
         .catch(error =>
         {
             AddNotification(`Error al a&ntilde;adir la valoraci&oacute;n (${error})`)
+        });
+    });
+    $('.button_apelar_pago').click(function()
+    {
+        let data =
+        {
+            titulo: `Apelacion a negociacion #${$('#text_orden_negociacion_id').val()}`
+            ,contenido: `Apelacion a negociacion #${$('#text_orden_negociacion_id').val()}`
+            ,usuario1: $('#field_usuario_creador').val()
+            ,usuario2: $('#field_usuario_negoceador').val()
+        }
+
+        fetch(`/support`, 
+        {
+            method: 'POST'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+            ,body: JSON.stringify(data)
+        })
+        .then(response =>
+        {
+            if(response.status == 200)
+            {
+                AddNotification(`Ticket creado correctamente. Redirigiendo`);
+                setTimeout(() =>
+                {
+                    window.location.href = "soporte-y-ayuda.html";
+                }, 1000);
+            }
+            else
+                AddNotification(`Error al a&ntilde;adir el Ticket`)
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al a&ntilde;adir el Ticket (${error})`)
         });
     });
 

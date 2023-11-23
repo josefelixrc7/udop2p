@@ -5,6 +5,48 @@ exports.Handler = (req, res, db, url_query) =>
 {
     switch(req.method)
     {
+        case 'POST':
+        {
+            dc.DataCollector(req, result =>
+            {
+                let email = ut.find_session(req);
+    
+                if(email == '')
+                {
+                    res.writeHead(403, {'Content-Type': 'text/html'});
+                    res.write('No autorizado');
+                    return res.end();
+                }
+    
+                query = `
+                    INSERT INTO siswebp2p.tickets (titulo, contenido, id_usuario1, id_usuario2)
+                    VALUES
+                    (
+                        ?
+                        ,?
+                        ,(SELECT id FROM siswebp2p.usuarios WHERE correo = ?)
+                        ,(SELECT id FROM siswebp2p.usuarios WHERE correo = ?)
+                    )
+                `;
+    
+                db.pool_conn
+                .query(query, [result.titulo, result.contenido, result.usuario1, result.usuario2])
+                .then(results =>
+                {
+                    delete results.meta;
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.write(JSON.stringify(results));
+                    return res.end();
+                })
+                .catch(err =>
+                {
+                    res.writeHead(502, {'Content-Type': 'text/html'});
+                    res.write("Error: " + err);
+                    return res.end();
+                });
+            });
+            break;
+        }
         case 'GET':
         {
             let email = ut.find_session(req);

@@ -2,7 +2,6 @@ $(function()
 {
     const read_tickets = function()
     {
-
         fetch(`/support`, 
         {
             method: 'GET'
@@ -30,10 +29,24 @@ $(function()
                         <table class="table">
                             <tbody>
                                 <tr>
+                                    <td>T&iacute;tulo</td>
+                                    <td>
+                                        <h3>${data[key].titulo}</h3>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td>Estado</td>
                                     <td>
-                                        <strong>${data[key].estado}</strong>
+                                        <h3>${data[key].estado}</h3>
                                     </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Descripci&oacute;n</td>
+                                    <td><p>${data[key].contenido}</p></td>
                                     <td>
                                     </td>
                                 </tr>
@@ -47,18 +60,6 @@ $(function()
                                     </td>
                                     <td>
                                         <button class="button_update_estado btn btn-primary d-inline-block w-auto" tag="${data[key].id}">Actualizar</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>T&iacute;tulo</td>
-                                    <td>${data[key].estado}</td>
-                                    <td>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Descripci&oacute;n</td>
-                                    <td><p>${data[key].contenido}</p></td>
-                                    <td>
                                     </td>
                                 </tr>
                             </tbody>
@@ -104,6 +105,7 @@ $(function()
             if(response.status == 200)
             {
                 AddNotification(`Actualizado el estado`);
+                window.location.href = "soporte-y-ayuda.html";
             }
             else
             {
