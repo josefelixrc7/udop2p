@@ -20,7 +20,7 @@ $(function()
             for(let key in data)
             {
                 let button_ticket = `
-                    <button class="nav-link ${key == 0? 'active' : ''}" id="v-pills-${data[key].id}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-${data[key].id}" type="button" role="tab" aria-controls="v-pills-${data[key].id}" aria-selected="${key == 0? 'true' : 'false'}">${data[key].titulo}</button>
+                    <button class="nav-link ${key == 0? 'active' : ''}" id="v-pills-${data[key].id}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-${data[key].id}" type="button" role="tab" aria-controls="v-pills-${data[key].id}" aria-selected="${key == 0? 'true' : 'false'}">#${data[key].id}: ${data[key].titulo}(${data[key].estado})</button>
                 `;
                 
                 $("#section_buttons_tickets").append(button_ticket);
@@ -40,13 +40,13 @@ $(function()
                                 <tr>
                                     <td>Actualizar estado</td>
                                     <td>
-                                        <select class="form-select d-inline-block" id="button_update_ticket">
+                                        <select class="form-select d-inline-block" id="button_update_ticket_${data[key].id}">
                                             <option value="En espera">En espera</option>
                                             <option value="Resuelto">Resuelto</option>
                                         </select>
                                     </td>
                                     <td>
-                                        <button id="button_update_estado" class="btn btn-primary d-inline-block w-auto" tag="${data[key].id}">Actualizar</button>
+                                        <button class="button_update_estado btn btn-primary d-inline-block w-auto" tag="${data[key].id}">Actualizar</button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -80,4 +80,39 @@ $(function()
         });
     }
     read_tickets();
+
+    $(document).on('click', '.button_update_estado', function(e)
+    {
+        let tag = $(e.target).attr('tag');
+        let data = 
+        {
+            id_ticket: tag
+            ,estado: $(`#button_update_ticket_${tag}`).val()
+        }
+
+        fetch(`/support`, 
+        {
+            method: 'PUT'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+            ,body: JSON.stringify(data)
+        })
+        .then(response =>
+        {
+            if(response.status == 200)
+            {
+                AddNotification(`Actualizado el estado`);
+            }
+            else
+            {
+                AddNotification(`Error al actualizar el estado`);
+            }
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al actualizar el estado (${error})`)
+        });
+    });
 });
