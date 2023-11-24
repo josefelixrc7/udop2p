@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Anuncios | SISWEBP2P</title>
+
+    <!-- CSS -->
+        <link href="assets/bootstrap-v5.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="assets/css/main.css" rel="stylesheet">
+
+</head>
+<body>
+    <header>
+        <h2><img width="150px" class="" src="assets/images/logo.png" alt=""></h2>
+        <nav>
+            <ul>
+                <li><a class="link_session_email" href="#"></a></li>
+                <li><a class="logout" href="#">Cerrar sesi&oacute;n</a></li>
+            </ul>
+        </nav>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="inicio.html">Inicio</a></li>
+            <li><a href="billeteras.html">Billeteras</a></li>
+            <li><a href="comerciar.html">Comerciar</a></li>
+            <li><a href="mercados.html">Mercados</a></li>
+            <li><a href="soporte-y-ayuda.html">Soporte y Ayuda</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div>
+            <h4 class="d-inline-block me-4">Anuncios</h4>
+            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#announcements_add">
+                Nuevo anuncio
+            </a>
+        </div>
+        <table id="table_comercios" class="table">
+            <thead>
+                <tr>
+                    <th>Estado</th>
+                    <th>Criptomoneda</th>
+                    <th>FIAT</th>
+                    <th>Monto inicial</th>
+                    <th>Monto disponible</th>
+                    <th>M&eacute;todo de pago</th>
+                    <th>Tipo de orden</th>
+                    <th>Negociaciones</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    
+        <!-- Announcements: Add -->
+        <div class="modal fade" id="announcements_add" tabindex="-1" aria-labelledby="announcements_add_label" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <form class="modal-content" id="form_announcements_add">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="announcements_add_label">A&ntilde;adir anuncio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="notifications_announcements_add">
+                        </div>
+                        <table id="table_billing_detailed" class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Criptomoneda</td>
+                                    <td>
+                                        <select class="form-select" id="an_criptomoneda" required>
+                                            <option value="1">Bitcoin (BTC)</option>
+                                            <option value="2">Ethereum (ETH)</option>
+                                            <option value="15">Binance Coin (BNB)</option>
+                                            <option value="16">Cardano (ADA)</option>
+                                            <option value="17">Solana (SOL)</option>
+                                            <option value="18">Ripple (XRP)</option>
+                                            <option value="19">Dogecoin (DOGE)</option>
+                                            <option value="20">Litecoin (LTC)</option>
+                                            <option value="21">Bitcoin Cash (BCH)</option>
+                                            <option value="22">Tether (USDT)</option>
+                                            <option value="23">Binance USD (BUSD)</option>
+                                            <option value="24">Monero (XMR)</option>
+                                            <option value="25">USD Coin (USDC)</option>
+                                            <option value="26">Comprar</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>FIAT</td>
+                                    <td>
+                                        <select class="form-select" id="an_fiat" required>
+                                            <option value="1">VES</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Monto</td>
+                                    <td>
+                                        <input class="form-control" id="an_monto" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>M&eacute;todo de pago</td>
+                                    <td>
+                                        <select class="form-select" id="an_metodo_pago" required>
+                                            <option value="1">Pago movil</option>
+                                            <option value="2">Transferencia bancaria</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tipo de orden (Lo que tus negoceadores realizar&aacute;n)</td>
+                                    <td>
+                                        <select class="form-select" id="an_tipo_orden" required>
+                                            <option value="1">Comprar</option>
+                                            <option value="2">Vender</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">A&ntilde;adir</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    
+    </main>
+
+    <!-- Notifications -->
+        <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+        </div>
+    <!-- Notifications -->
+
+    <script src="assets/js/jquery.min-v3.4.1.js"></script>
+    <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
+    <script src="assets/js/restapi/announcements.js"></script>
+
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(!result)
+                {
+                    AddNotification(`Debe iniciar sesi&oacute;n.`);
+                    window.location.href = "iniciar-sesion.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
+</body>
+</html>

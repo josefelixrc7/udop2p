@@ -5,6 +5,103 @@ exports.Handler = (req, res, db, url_query) =>
 {
     switch(req.method)
     {
+        case 'POST':
+        {
+            dc.DataCollector(req, async function(result)
+            {
+                let email = ut.find_session(req);
+    
+                if(email == '')
+                {
+                    res.writeHead(403, {'Content-Type': 'text/html'});
+                    res.write('No autorizado');
+                    return res.end();
+                }
+    
+                // Verify: Sufficient balance
+                    let query = `
+                        SELECT
+                            b.saldo AS saldo
+                        FROM siswebp2p.billeteras b
+                        JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
+                        WHERE
+                            u.correo = ?
+                            AND b.id_criptomoneda = ?
+                    `;
+                    const res_query = await db.pool_conn.query
+                    (
+                        query
+                        ,[email, result.an_criptomoneda]
+                    );
+                    if(res_query.length < 1)
+                    {
+                        res.writeHead(502, {'Content-Type': 'application/json'});
+                        res.write(JSON.stringify({error: 'Su saldo es insuficiente en esta criptomoneda.'}));
+                        return res.end();
+                    }
+                    if(res_query[0].saldo < result.an_monto)
+                    {
+                        res.writeHead(502, {'Content-Type': 'application/json'});
+                        res.write(JSON.stringify({error: 'Su saldo es insuficiente en esta criptomoneda.'}));
+                        return res.end();
+                    }
+
+                // Update balance
+                    query = `
+                        UPDATE siswebp2p.billeteras b
+                        JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
+                        SET
+                            b.saldo = b.saldo - ?
+                        WHERE
+                            u.correo = ?
+                            AND b.id_criptomoneda = ?
+                    `;
+                    await db.pool_conn.query
+                    (
+                        query
+                        ,[result.an_monto, email, result.an_criptomoneda]
+                    );
+                // Create announcement
+                    query = `
+                        INSERT INTO siswebp2p.ordenes_anuncios (monto_disponible, monto_inicial, id_usuario_creador, id_orden_tipo, id_metodo_pago, id_criptomoneda)
+                        SELECT
+                            ?
+                            ,?
+                            ,u.id
+                            ,?
+                            ,?
+                            ,?
+                        FROM siswebp2p.usuarios u
+                        WHERE
+                            u.correo = ?
+                    `;
+        
+                    db.pool_conn
+                    .query(query,
+                        [
+                            result.an_monto
+                            ,result.an_monto
+                            ,result.an_tipo_orden
+                            ,result.an_metodo_pago
+                            ,result.an_criptomoneda
+                            ,email
+                        ])
+                    .then(results =>
+                    {
+                        delete results.meta;
+                        res.writeHead(200, {'Content-Type': 'application/json'});
+                        res.write(JSON.stringify(results));
+                        return res.end();
+                    })
+                    .catch(err =>
+                    {
+                        res.writeHead(502, {'Content-Type': 'text/html'});
+                        res.write("Error: " + err);
+                        return res.end();
+                    });
+            });
+            break;
+        }
         case 'GET':
         {
             let email = ut.find_session(req);
