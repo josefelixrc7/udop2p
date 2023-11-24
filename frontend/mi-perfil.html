@@ -36,8 +36,11 @@
                 <tr>
                     <td>Nombres y apellidos</td>
                     <td>
-                        <input type="text" class="form-control" name="">
+                        <input type="text" class="form-control" id="field_nombre_completo">
                     </td>
+                </tr>
+                <tr>
+                    <td><button id="button_update_perfil" class="btn btn-primary d-inline-block w-auto">Guardar</button></td>
                 </tr>
             </tbody>
         </table>
@@ -48,58 +51,79 @@
                 <tr>
                     <td>Contrase&ntilde;a actual</td>
                     <td>
-                        <input type="password" class="form-control" name="">
+                        <input type="password" id="field_clave_actual" class="form-control">
                     </td>
                 </tr>
                 <tr>
                     <td>Nueva contrase&ntilde;a</td>
                     <td>
-                        <input type="password" class="form-control" name="">
+                        <input type="password" id="field_clave_nueva"" class="form-control">
                     </td>
                 </tr>
                 <tr>
                     <td>Repetir contrase&ntilde;a</td>
                     <td>
-                        <input type="password" class="form-control" name="">
+                        <input type="password" id="field_clave_repetir"" class="form-control">
                     </td>
                 </tr>
                 <tr>
-                    <td><button class="btn btn-primary d-inline-block w-auto">Guardar</button></td>
+                    <td><button id="button_update_clave" class="btn btn-primary d-inline-block w-auto">Guardar</button></td>
                 </tr>
             </tbody>
         </table>  
         <hr>
-        <h5>Agregar m&eacute;todos de pago</h5>
-        <button class="btn btn-primary d-inline-block w-auto">Nuevo</button>
+        <h5>Actualizar m&eacute;todos de pago</h5>
         <table class="table mb-4">
             <thead>
                 <tr>
                     <th>Nombre del m&eacute;todo de pago</th>
                     <th>Descripci&oacute;n</th>
-                    <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>Pago m&oacute;vil</td>
                     <td>
-                        <p>04149395393 Bancaribe V2702938</p>
+                        <textarea id="field_pago_movil" class="form-control"></textarea>
                     </td>
+                </tr>
+                <tr>
+                    <td>Transferencia bancaria</td>
                     <td>
-                        <button class="btn btn-primary d-inline-block w-auto">Editar</button>
+                        <textarea id="field_transferencia" class="form-control"></textarea>
                     </td>
-                    <td>
-                        <button class="btn btn-secondary d-inline-block w-auto">Borrar</button>
-                    </td>
+                </tr>
+                <tr>
+                    <td><button id="button_update_metodos_pagos" class="btn btn-primary d-inline-block w-auto">Actualizar</button></td>
                 </tr>
             </tbody>
         </table>  
     </main>
     
+    <!-- Notifications -->
+        <div id="notifications" class="position-fixed top-0 end-0 sticky-top w-25 p-2">
+        </div>
+    <!-- Notifications -->
+
     <script src="assets/js/jquery.min-v3.4.1.js"></script>
     <script src="assets/bootstrap-v5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/restapi/login.js"></script>
+    <script src="assets/js/restapi/profile.js"></script>
 
+    <script>
+        $(function ()
+        {
+            let f = (result) =>
+            {
+                if(!result)
+                {
+                    AddNotification(`Debe iniciar sesi&oacute;n.`);
+                    window.location.href = "iniciar-sesion.html";
+                }
+            }
+            VerifyInitiatedSession(f);
+        });
+    </script>
 </body>
 </html>

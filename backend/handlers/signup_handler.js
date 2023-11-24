@@ -32,9 +32,19 @@ exports.Handler = (req, res, db, url_query) =>
                     INSERT INTO siswebp2p.usuarios (clave, correo, cedula, nombre_completo)
                     VALUES (?, ?, ?, ?)
                 `;
+                let res_query2 = await db.pool_conn.query
+                (
+                    query
+                    ,[result.contrasena, result.correo, result.cedula, result.nombre_completo]
+                );
+
+                query = `
+                    INSERT INTO siswebp2p.usuarios_metodos_pago (descripcion, id_usuario, id_metodo_pago)
+                    VALUES ('Vacio', ?, 1), ('Vacio', ?, 2)
+                `;
     
                 db.pool_conn
-                .query(query, [result.contrasena, result.correo, result.cedula, result.nombre_completo])
+                .query(query, [res_query2.insertId, res_query2.insertId])
                 .then(results =>
                 {
                     delete results.meta;
