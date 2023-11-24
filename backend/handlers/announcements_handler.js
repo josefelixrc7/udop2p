@@ -18,74 +18,81 @@ exports.Handler = (req, res, db, url_query) =>
                     return res.end();
                 }
     
-                // Verify: Sufficient balance
-                    let query = `
-                        SELECT
-                            b.saldo AS saldo
-                        FROM siswebp2p.billeteras b
-                        JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
-                        WHERE
-                            u.correo = ?
-                            AND b.id_criptomoneda = ?
-                    `;
-                    const res_query = await db.pool_conn.query
-                    (
-                        query
-                        ,[email, result.an_criptomoneda]
-                    );
-                    if(res_query.length < 1)
-                    {
-                        res.writeHead(502, {'Content-Type': 'application/json'});
-                        res.write(JSON.stringify({error: 'Su saldo es insuficiente en esta criptomoneda.'}));
-                        return res.end();
-                    }
-                    if(res_query[0].saldo < result.an_monto)
-                    {
-                        res.writeHead(502, {'Content-Type': 'application/json'});
-                        res.write(JSON.stringify({error: 'Su saldo es insuficiente en esta criptomoneda.'}));
-                        return res.end();
-                    }
-
-                // Update balance
-                    query = `
-                        UPDATE siswebp2p.billeteras b
-                        JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
-                        SET
-                            b.saldo = b.saldo - ?
-                        WHERE
-                            u.correo = ?
-                            AND b.id_criptomoneda = ?
-                    `;
-                    await db.pool_conn.query
-                    (
-                        query
-                        ,[result.an_monto, email, result.an_criptomoneda]
-                    );
+                if(result.an_tipo_orden == 2)
+                {
+                    // Verify: Sufficient balance
+                        let query = `
+                            SELECT
+                                b.saldo AS saldo
+                            FROM siswebp2p.billeteras b
+                            JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
+                            WHERE
+                                u.correo = ?
+                                AND b.id_criptomoneda = ?
+                        `;
+                        const res_query = await db.pool_conn.query
+                        (
+                            query
+                            ,[email, result.an_criptomoneda]
+                        );
+                        if(res_query.length < 1)
+                        {
+                            res.writeHead(502, {'Content-Type': 'application/json'});
+                            res.write(JSON.stringify({error: 'Su saldo es insuficiente en esta criptomoneda.'}));
+                            return res.end();
+                        }
+                        if(res_query[0].saldo < result.an_monto)
+                        {
+                            res.writeHead(502, {'Content-Type': 'application/json'});
+                            res.write(JSON.stringify({error: 'Su saldo es insuficiente en esta criptomoneda.'}));
+                            return res.end();
+                        }
+    
+                    // Update balance
+                        query = `
+                            UPDATE siswebp2p.billeteras b
+                            JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
+                            SET
+                                b.saldo = b.saldo - ?
+                            WHERE
+                                u.correo = ?
+                                AND b.id_criptomoneda = ?
+                        `;
+                        await db.pool_conn.query
+                        (
+                            query
+                            ,[result.an_monto, email, result.an_criptomoneda]
+                        );
+    
+                }
                 // Create announcement
                     query = `
                         INSERT INTO siswebp2p.ordenes_anuncios (monto_disponible, monto_inicial, id_usuario_creador, id_orden_tipo, id_metodo_pago, id_criptomoneda)
-                        SELECT
-                            ?
-                            ,?
-                            ,u.id
-                            ,?
-                            ,?
-                            ,?
+                        SELECT ?, ?, u.id, ?, ?, ?
                         FROM siswebp2p.usuarios u
-                        WHERE
-                            u.correo = ?
+                        WHERE u.correo = ?
                     `;
-        
-                    db.pool_conn
-                    .query(query,
-                        [
+                    let res_query2 = await db.pool_conn.query
+                    (
+                        query
+                        ,[
                             result.an_monto
                             ,result.an_monto
                             ,result.an_tipo_orden
                             ,result.an_metodo_pago
                             ,result.an_criptomoneda
                             ,email
-                        ])
+                        ]
+                    );
+                    
+                // Add price
+                    query = `
+                        INSERT INTO siswebp2p.monedas_fiat_precio (precio, id_orden_anuncio, id_moneda_fiat)
+                        VALUES (?, ?, ?)
+                    `;
+        
+                    db.pool_conn
+                    .query(query, [result.an_precio, res_query2.insertId, result.an_fiat])
                     .then(results =>
                     {
                         delete results.meta;
@@ -115,7 +122,27 @@ exports.Handler = (req, res, db, url_query) =>
 
             let query = '';
             let parameters = [];
-            if(url_query.id_announcement != undefined)
+            if(url_query.panel == 1)
+            {
+                query = `
+                    SELECT
+                        oa.id AS id_orden
+                        ,ot.tipo AS tipo_orden
+                        ,oa.monto_inicial AS monto_inicial
+                        ,oa.monto_disponible AS monto_disponible
+                        ,COUNT(one.id) AS negociaciones
+                        ,oa.fecha_registro AS fecha_registro
+                    FROM siswebp2p.ordenes_anuncios oa
+                    JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
+                    JOIN siswebp2p.ordenes_tipos ot ON ot.id = oa.id_orden_tipo
+                    LEFT JOIN siswebp2p.ordenes_negociaciones one ON one.id_orden_anuncio = oa.id
+                    WHERE
+                        u.correo = ?
+                    GROUP BY oa.id
+                `;
+                parameters = [email];
+            }
+            else if(url_query.id_announcement != undefined)
             {
                 query = `
                     SELECT
@@ -133,13 +160,24 @@ exports.Handler = (req, res, db, url_query) =>
                         ,IFNULL(b.saldo, 0) AS saldo
                     FROM siswebp2p.ordenes_anuncios oa
                     JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
-                    JOIN siswebp2p.monedas_fiat_precio mfp ON mfp.id_orden_anuncio = oa.id
+                    JOIN
+                    (
+                        SELECT 
+                            id
+                            ,precio
+                            ,fecha_registro
+                            ,id_orden_anuncio
+                            ,id_moneda_fiat
+                            ,ROW_NUMBER() OVER (PARTITION BY id_orden_anuncio ORDER BY fecha_registro DESC) AS row
+                        FROM siswebp2p.monedas_fiat_precio
+                    )  mfp ON mfp.id_orden_anuncio = oa.id
                     JOIN siswebp2p.monedas_fiat mf ON mf.id = mfp.id_moneda_fiat
                     JOIN siswebp2p.metodos_pago mp ON mp.id = oa.id_metodo_pago
                     JOIN siswebp2p.criptomonedas c ON c.id = oa.id_criptomoneda
                     LEFT JOIN siswebp2p.billeteras b ON b.id_criptomoneda = c.id AND b.id_usuario = (SELECT id FROM siswebp2p.usuarios WHERE correo = ?)
                     WHERE
                         oa.id = ?
+                        AND mfp.row = 1
                 `;
                 parameters = [email, url_query.id_announcement];
             }
@@ -155,19 +193,27 @@ exports.Handler = (req, res, db, url_query) =>
                         ,mp.nombre AS metodo_pago
                         ,(IF
                             (
-                                (SELECT
-                                    u2.id
-                                FROM siswebp2p.usuarios u2
-                                JOIN siswebp2p.usuarios_metodos_pago ump2 ON ump2.id_usuario = u2.id
-                                WHERE
-                                    u2.correo = ?
-                                    AND ump2.id_metodo_pago = mp.id)
-                                IS NOT NULL, 1, 0
-                             )
+                                (
+                                    SELECT u2.id
+                                    FROM siswebp2p.usuarios u2
+                                    JOIN siswebp2p.usuarios_metodos_pago ump2 ON ump2.id_usuario = u2.id
+                                    WHERE u2.correo = ? AND ump2.id_metodo_pago = mp.id
+                                ) IS NOT NULL, 1, 0
+                            )
                         ) AS usuario_posee_metodo
                     FROM siswebp2p.ordenes_anuncios oa
                     JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
-                    JOIN siswebp2p.monedas_fiat_precio mfp ON mfp.id_orden_anuncio = oa.id
+                    JOIN
+                    (
+                        SELECT 
+                            id
+                            ,precio
+                            ,fecha_registro
+                            ,id_orden_anuncio
+                            ,id_moneda_fiat
+                            ,ROW_NUMBER() OVER (PARTITION BY id_orden_anuncio ORDER BY fecha_registro DESC) AS row
+                        FROM siswebp2p.monedas_fiat_precio
+                    ) mfp ON mfp.id_orden_anuncio = oa.id
                     JOIN siswebp2p.monedas_fiat mf ON mf.id = mfp.id_moneda_fiat
                     JOIN siswebp2p.metodos_pago mp ON mp.id = oa.id_metodo_pago
                     JOIN siswebp2p.criptomonedas c ON c.id = oa.id_criptomoneda
@@ -176,6 +222,7 @@ exports.Handler = (req, res, db, url_query) =>
                         AND mf.id = ?
                         AND oa.id_orden_tipo = ?
                         AND u.correo != ?
+                        AND mfp.row = 1
                 `;
                 parameters = [email, url_query.crypto, url_query.fiat, url_query.type_orden_id, email];
             }

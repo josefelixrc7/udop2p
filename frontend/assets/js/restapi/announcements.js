@@ -1,5 +1,54 @@
 $(function()
 {
+    const read_announcements = function()
+    {
+        $("#table_anuncios tbody").empty();
+        $("#table_anuncios tbody").append(spinner_wait);
+    
+        fetch(`/announcements?panel=1`, 
+        {
+            method: 'GET'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(data =>
+        {
+            $("#table_anuncios tbody").empty();
+    
+            for(let key in data)
+            {
+                // Fields
+                let fields = 
+                [
+                    ,$("<td></td>").text(data[key].id_orden)
+                    ,$("<td></td>").text(data[key].tipo_orden)
+                    ,$("<td></td>").text(data[key].monto_inicial)
+                    ,$("<td></td>").text(data[key].monto_disponible)
+                    ,$("<td></td>").text(data[key].negociaciones)
+                    ,$("<td></td>").text(data[key].fecha_registro)
+                    ,$(`<td><button id="button_modificar_anuncio" tag="${data[key].id_orden}" class="btn btn-primary">Modificar</button></td>`)
+                ];
+
+                let row = $("<tr></tr>");
+                for (let val of fields)
+                {
+                     $(row).append(val);
+                }
+                
+                $("#table_anuncios tbody").append(row);
+            }
+        })
+        .catch(error =>
+        {
+            $("#table_anuncios tbody").empty();
+            AddNotification(`Error al leer los anuncios (${error})`)
+        });
+    };
+    read_announcements();
+
     $('#form_announcements_add').submit(function(e)
     {
         e.preventDefault();
@@ -14,6 +63,7 @@ $(function()
             an_criptomoneda: $('#an_criptomoneda').val()
             ,an_fiat: $('#an_fiat').val()
             ,an_monto: $('#an_monto').val()
+            ,an_precio: $('#an_precio').val()
             ,an_metodo_pago: $('#an_metodo_pago').val()
             ,an_tipo_orden: $('#an_tipo_orden').val()
         };
@@ -21,6 +71,11 @@ $(function()
         if(data.an_monto <= 0)
         {
             AddNotificationBlock('#notifications_announcements_add', `El monto no puede ser menor o igual a cero`);
+            return;
+        }
+        if(data.an_precio <= 0)
+        {
+            AddNotificationBlock('#notifications_announcements_add', `El precio no puede ser menor o igual a cero`);
             return;
         }
 
