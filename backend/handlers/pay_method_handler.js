@@ -19,8 +19,8 @@ exports.Handler = (req, res, db, url_query) =>
             let query = `
                 SELECT
                     IF(oa.id_orden_tipo = 1
-                        ,(SELECT descripcion FROM siswebp2p.usuarios_metodos_pago WHERE id_usuario = oa.id_usuario_creador)
-                        ,(SELECT descripcion FROM siswebp2p.usuarios_metodos_pago WHERE id_usuario = one.id_usuario_negoceador)
+                        ,(SELECT descripcion FROM siswebp2p.usuarios_metodos_pago WHERE id_usuario = oa.id_usuario_creador AND id_metodo_pago = oa.id_metodo_pago)
+                        ,(SELECT descripcion FROM siswebp2p.usuarios_metodos_pago WHERE id_usuario = one.id_usuario_negoceador AND id_metodo_pago = oa.id_metodo_pago)
                     ) AS descripcion
                 FROM siswebp2p.ordenes_negociaciones one
                 JOIN siswebp2p.ordenes_anuncios oa ON oa.id = one.id_orden_anuncio

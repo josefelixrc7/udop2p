@@ -18,7 +18,7 @@ exports.Handler = (req, res, db, url_query) =>
                     return res.end();
                 }
     
-                if(result.an_tipo_orden == 2)
+                if(result.an_tipo_orden == 1)
                 {
                     // Verify: Sufficient balance
                         let query = `
@@ -132,6 +132,8 @@ exports.Handler = (req, res, db, url_query) =>
                         ,oa.monto_disponible AS monto_disponible
                         ,COUNT(one.id) AS negociaciones
                         ,oa.fecha_registro AS fecha_registro
+                        ,oa.estado AS estado_orden
+                        ,oa.id_criptomoneda AS id_criptomoneda
                     FROM siswebp2p.ordenes_anuncios oa
                     JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
                     JOIN siswebp2p.ordenes_tipos ot ON ot.id = oa.id_orden_tipo
@@ -178,6 +180,7 @@ exports.Handler = (req, res, db, url_query) =>
                     WHERE
                         oa.id = ?
                         AND mfp.row = 1
+                        AND oa.estado = 'activo'
                 `;
                 parameters = [email, url_query.id_announcement];
             }
@@ -223,6 +226,7 @@ exports.Handler = (req, res, db, url_query) =>
                         AND oa.id_orden_tipo = ?
                         AND u.correo != ?
                         AND mfp.row = 1
+                        AND oa.estado = 'activo'
                 `;
                 parameters = [email, url_query.crypto, url_query.fiat, url_query.type_orden_id, email];
             }
@@ -241,6 +245,85 @@ exports.Handler = (req, res, db, url_query) =>
                 res.writeHead(502, {'Content-Type': 'text/html'});
                 res.write("Error: " + err);
                 return res.end();
+            });
+            break;
+        }
+        case 'PUT':
+        {
+            dc.DataCollector(req, async function(result)
+            {
+                let email = ut.find_session(req);
+    
+                if(email == '')
+                {
+                    res.writeHead(403, {'Content-Type': 'text/html'});
+                    res.write('No autorizado');
+                    return res.end();
+                }
+    
+                // Verify trades
+                    query = `
+                        SELECT id
+                        FROM siswebp2p.ordenes_negociaciones one
+                        WHERE
+                            one.id_orden_anuncio = ?
+                            AND one.estado != 'Finalizado'
+                    `;
+                    let res_query2 = await db.pool_conn.query
+                    (
+                        query
+                        ,[result.id_orden]
+                    );
+
+                    if(res_query2.length > 0)
+                    {
+                        res.writeHead(502, {'Content-Type': 'application/json'});
+                        res.write(JSON.stringify({error: 'Esta orden de anuncio todavia tiene comercios (negociaciones) sin finalizar.'}));
+                        return res.end();
+                    }
+                    
+                // Return money
+                    query = `
+                        UPDATE siswebp2p.billeteras b
+                        JOIN siswebp2p.usuarios u ON u.id = b.id_usuario
+                        JOIN siswebp2p.ordenes_anuncios oa ON oa.id_usuario_creador = u.id
+                        SET
+                            b.saldo = b.saldo + oa.monto_disponible
+                        WHERE
+                            u.correo = ?
+                            AND b.id_criptomoneda = oa.id_criptomoneda
+                            AND oa.id = ?
+                    `;
+                    await db.pool_conn.query
+                    (
+                        query
+                        ,[email, result.id_orden]
+                    );
+
+                // Change state
+                    query = `
+                        UPDATE siswebp2p.ordenes_anuncios
+                        SET
+                            estado = 'inactivo'
+                        WHERE
+                            id = ?
+                    `;
+        
+                    db.pool_conn
+                    .query(query, [result.id_orden])
+                    .then(results =>
+                    {
+                        delete results.meta;
+                        res.writeHead(200, {'Content-Type': 'application/json'});
+                        res.write(JSON.stringify(results));
+                        return res.end();
+                    })
+                    .catch(err =>
+                    {
+                        res.writeHead(502, {'Content-Type': 'text/html'});
+                        res.write("Error: " + err);
+                        return res.end();
+                    });
             });
             break;
         }

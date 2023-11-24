@@ -24,13 +24,15 @@ $(function()
                 let fields = 
                 [
                     ,$("<td></td>").text(data[key].id_orden)
+                    ,$("<td></td>").text(data[key].estado_orden)
                     ,$("<td></td>").text(data[key].tipo_orden)
                     ,$("<td></td>").text(data[key].monto_inicial)
                     ,$("<td></td>").text(data[key].monto_disponible)
                     ,$("<td></td>").text(data[key].negociaciones)
                     ,$("<td></td>").text(data[key].fecha_registro)
-                    ,$(`<td><button id="button_modificar_anuncio" tag="${data[key].id_orden}" class="btn btn-primary">Modificar</button></td>`)
                 ];
+                if(data[key].estado_orden == 'activo')
+                    fields.push($(`<td><button id="button_modificar_anuncio" tag="${data[key].id_orden}"class="btn btn-primary">Cerrar</button></td>`));
 
                 let row = $("<tr></tr>");
                 for (let val of fields)
@@ -116,6 +118,49 @@ $(function()
         {
             $('#announcements_add button[data-bs-dismiss="modal"]').click();
             AddNotification(`Error al a&ntilde;adir el anuncio. (${error})`);
+        });
+    });
+    $(document).on('click', '#button_modificar_anuncio', function(e)
+    {
+        let tag = $(e.target).attr('tag');
+
+        let data = {id_orden: tag};
+
+        fetch(`/announcements`,
+        {
+            method: 'PUT'
+            ,mode: 'cors'
+            ,cache: 'no-cache'
+            ,credentials: 'same-origin'
+            ,headers: {'Content-Type': 'application/json'}
+            ,body: JSON.stringify(data)
+        })
+        .then(response => 
+        {
+            if(response.status == 200)
+            {
+                AddNotification(`Anuncio cerrado correctamente.`);
+                setTimeout(function()
+                {
+                    window.location.href = "anuncios.html";
+                }, 1000); 
+            }
+            else
+            {
+                return response.json()
+            }
+        })
+        .then(data =>
+        {
+            if(data == undefined)
+                return;
+
+            if(data.error != '')
+                AddNotification(`Error al cerrar el anuncio. (${data.error})`)
+        })
+        .catch(error =>
+        {
+            AddNotification(`Error al cerrar el anuncio. (${error})`);
         });
     });
 });
