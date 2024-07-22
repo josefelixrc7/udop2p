@@ -32,7 +32,7 @@ $(function()
                     ,$("<td></td>").text(data[key].fecha_registro)
                 ];
                 if(data[key].estado_orden == 'activo')
-                    fields.push($(`<td><button id="button_modificar_anuncio" tag="${data[key].id_orden}"class="btn btn-primary">Cerrar</button></td>`));
+                    fields.push($(`<td><button id="button_modificar_anuncio" tag="${data[key].id_orden}"class="btn btn-primary">Cerrar anuncio</button></td>`));
 
                 let row = $("<tr></tr>");
                 for (let val of fields)

@@ -77,8 +77,8 @@
                         <tr>
                             <th>Usuario</th>
                             <th>Reputacion</th>
-                            <th>Precio</th>
                             <th>Disponible</th>
+                            <th>Precio</th>
                             <th>Medio de pago</th>
                             <th></th>
                         </tr>
@@ -111,12 +111,12 @@
                             <td></td>
                         </tr>
                         <tr>
-                            <td>Cantidad a <strong class="type_comercio"></strong></td>
+                            <td>Cantidad a <strong class="type_comercio"> (Criptomoneda)</strong></td>
                             <td><input id="field_cantidad_comerciar" class="form-control" type="number"></td>
                             <td><strong id="field_cantidad_comerciar_criptomoneda"></strong></td>
                         </tr>
                         <tr>
-                            <td>Precio</td>
+                            <td>Precio (FIAT)</td>
                             <td><input id="field_precio" class="form-control" type="number" readonly></td>
                             <td><strong id="field_precio_fiat"></strong></td>
                         </tr>
@@ -139,6 +139,11 @@
                 <div id="section_pagador">
                     <table class="table">
                         <tbody>
+                            <tr>
+                                <td>Cantidad a pagar (VES)</td>
+                                <td><input id="field_cantidad_pagar_fiat" class="form-control" type="number" readonly></td>
+                                <td><strong id="field_cantidad_pagar_fiat"></strong></td>
+                            </tr>
                             <tr id="row_subir_comprobante">
                                 <td>C&oacute;digo de comprobante (Referencia de transacci&oacute;n)</td>
                                 <td><input id="field_comprobante_subir" class="form-control" type="text"></td>

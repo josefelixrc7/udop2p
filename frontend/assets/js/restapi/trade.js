@@ -179,8 +179,8 @@ $(function()
                 [
                     ,$("<td></td>").text(data[key].usuario_nombre)
                     ,$("<td></td>").text(data[key].reputacion)
-                    ,$("<td></td>").text(data[key].precio)
                     ,$("<td></td>").text(data[key].disponible)
+                    ,$("<td></td>").text(data[key].precio)
                     ,$("<td></td>").text(data[key].metodo_pago)
                     ,$("<td></td>").append
                     (
@@ -257,10 +257,13 @@ $(function()
             {
                 $('#counter_time').text(time_left);
                 if (time_left === 0) {
-                    activate_tab('#nav-anuncios');
-                    read_ordenes_anuncios();
                     counter_status = false;
                     $('#counter_time').text('20');
+                    if(!$('#nav-pago').hasClass('active'))
+                    {
+                        activate_tab('#nav-anuncios');
+                        read_ordenes_anuncios();
+                    }
                 }
                 else
                 {
@@ -288,10 +291,11 @@ $(function()
         .then(data =>
         {
             $('.text_descripcion_metodo_pago').text(data[0].descripcion);
+            $('#field_cantidad_pagar_fiat').val(data[0].cantidad_pagar_fiat);
         })
         .catch(error =>
         {
-            AddNotification(`Error al leer el metodo de pago (${error})`)
+            AddNotification(`Error al leer el metodo de pago e informaci&oacute;n de pago. (${error})`)
         });
     }
     const create_trade = function(values)
@@ -421,7 +425,7 @@ $(function()
         activate_tab('#nav-negociacion');
         let id_announcement = $(e.target).attr('tag');
         read_announcement_info(id_announcement);
-        //init_counter();
+        init_counter();
     });
     $('#field_cantidad_comerciar').on('keyup', function(e)
     {

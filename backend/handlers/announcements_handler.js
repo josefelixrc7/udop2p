@@ -128,8 +128,8 @@ exports.Handler = (req, res, db, url_query) =>
                     SELECT
                         oa.id AS id_orden
                         ,ot.tipo AS tipo_orden
-                        ,oa.monto_inicial AS monto_inicial
-                        ,oa.monto_disponible AS monto_disponible
+                        ,CONCAT(oa.monto_inicial, ' ', c.nombre) AS monto_inicial
+                        ,CONCAT(oa.monto_disponible, ' ', c.nombre) AS monto_disponible
                         ,COUNT(one.id) AS negociaciones
                         ,oa.fecha_registro AS fecha_registro
                         ,oa.estado AS estado_orden
@@ -138,6 +138,7 @@ exports.Handler = (req, res, db, url_query) =>
                     JOIN siswebp2p.usuarios u ON u.id = oa.id_usuario_creador
                     JOIN siswebp2p.ordenes_tipos ot ON ot.id = oa.id_orden_tipo
                     LEFT JOIN siswebp2p.ordenes_negociaciones one ON one.id_orden_anuncio = oa.id
+                    JOIN siswebp2p.criptomonedas c ON c.id = oa.id_criptomoneda
                     WHERE
                         u.correo = ?
                     GROUP BY oa.id
@@ -151,7 +152,7 @@ exports.Handler = (req, res, db, url_query) =>
                         oa.id AS orden_id
                         ,mfp.id AS monedas_fiat_precio_id
                         ,u.nombre_completo AS usuario_nombre
-                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.usuarios_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
+                        ,IFNULL((SELECT ROUND(AVG(puntaje), 2) FROM siswebp2p.usuarios_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
                         ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
                         ,ROUND(mfp.precio, 2) AS precio_real
                         ,mf.nombre AS fiat_nombre
@@ -190,7 +191,7 @@ exports.Handler = (req, res, db, url_query) =>
                     SELECT
                         oa.id AS orden_id
                         ,u.nombre_completo AS usuario_nombre
-                        ,IFNULL((SELECT AVG(puntaje) FROM siswebp2p.usuarios_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
+                        ,IFNULL((SELECT ROUND(AVG(puntaje), 2) FROM siswebp2p.usuarios_puntaje WHERE id_usuario = oa.id_usuario_creador), 0) AS reputacion
                         ,CONCAT(ROUND(mfp.precio, 2), ' ', mf.nombre) AS precio
                         ,CONCAT(ROUND(oa.monto_disponible, 2), ' ', c.nombre) AS disponible
                         ,mp.nombre AS metodo_pago
@@ -200,7 +201,7 @@ exports.Handler = (req, res, db, url_query) =>
                                     SELECT u2.id
                                     FROM siswebp2p.usuarios u2
                                     JOIN siswebp2p.usuarios_metodos_pago ump2 ON ump2.id_usuario = u2.id
-                                    WHERE u2.correo = ? AND ump2.id_metodo_pago = mp.id
+                                    WHERE u2.correo = ? AND ump2.id_metodo_pago = mp.id AND ump2.descripcion != ''
                                 ) IS NOT NULL, 1, 0
                             )
                         ) AS usuario_posee_metodo

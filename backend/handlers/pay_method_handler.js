@@ -22,10 +22,12 @@ exports.Handler = (req, res, db, url_query) =>
                         ,(SELECT descripcion FROM siswebp2p.usuarios_metodos_pago WHERE id_usuario = oa.id_usuario_creador AND id_metodo_pago = oa.id_metodo_pago)
                         ,(SELECT descripcion FROM siswebp2p.usuarios_metodos_pago WHERE id_usuario = one.id_usuario_negoceador AND id_metodo_pago = oa.id_metodo_pago)
                     ) AS descripcion
+                    ,mfp.precio * one.monto_negoceado AS cantidad_pagar_fiat
                 FROM siswebp2p.ordenes_negociaciones one
                 JOIN siswebp2p.ordenes_anuncios oa ON oa.id = one.id_orden_anuncio
+                JOIN siswebp2p.monedas_fiat_precio mfp ON mfp.id_orden_anuncio = oa.id
                 WHERE
-                    one.id = ?
+                    one.id = ?;
             `;
 
             db.pool_conn

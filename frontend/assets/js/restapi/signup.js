@@ -42,11 +42,11 @@ $(function()
         {
             if(response.status == 200)
             {
-                AddNotification(`Registro exitoso. Redirigiendo.`);
+                AddNotification(`Registro exitoso, espera la validación de tus datos para que tu usuario sea activado.`);
                 setTimeout(() =>
                 {
                     window.location.href = "iniciar-sesion.html";
-                }, 1000);
+                }, 5000);
             }
             else if(response.status == 400)
                 AddNotification(`El correo o c&eacute;dula ya est&aacute; registrado.`);

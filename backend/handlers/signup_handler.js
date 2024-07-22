@@ -40,7 +40,7 @@ exports.Handler = (req, res, db, url_query) =>
 
                 query = `
                     INSERT INTO siswebp2p.usuarios_metodos_pago (descripcion, id_usuario, id_metodo_pago)
-                    VALUES ('Vacio', ?, 1), ('Vacio', ?, 2)
+                    VALUES ('', ?, 1), ('', ?, 2)
                 `;
     
                 db.pool_conn
